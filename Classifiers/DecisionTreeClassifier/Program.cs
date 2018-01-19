@@ -1,9 +1,6 @@
-﻿using DecisionTreeClassifier.Data;
+﻿using DecisionTreeClassifier.DataIO;
+using DecisionTreeClassifier.DataStructures;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DecisionTreeClassifier
 {
@@ -11,7 +8,10 @@ namespace DecisionTreeClassifier
     {
         static void Main(string[] args)
         {
-            HDF.TestLoad(); 
+            LabeledTomogram tom = DataReader.ReadTomogramPair(@"C:\Users\ben\Desktop\DataSets\data\0.bin",
+                @"C:\Users\ben\Desktop\DataSets\labels\0.bin", 64, 64);
+
+            return;
         }
     }
 }
