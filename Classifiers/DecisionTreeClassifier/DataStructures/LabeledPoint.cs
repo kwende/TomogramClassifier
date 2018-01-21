@@ -9,5 +9,6 @@ namespace DecisionTreeClassifier.DataStructures
         public int X { get; set; }
         public int Y { get; set; }
         public int Label { get; set; }
+        public LabeledTomogram SourceTomogram { get; set; }
     }
 }
