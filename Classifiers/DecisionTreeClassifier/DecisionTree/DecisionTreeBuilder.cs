@@ -59,7 +59,8 @@ namespace DecisionTreeClassifier.DecisionTree
             return ret;
         }
 
-        private SplitDirection ComputeSplitDirection(LabeledPoint point, SplittingQuestion question)
+        private SplitDirection ComputeSplitDirection(LabeledPoint point, SplittingQuestion question,
+            DecisionTreeOptions options)
         {
             int frameHeight = point.SourceTomogram.Height;
             int frameWidth = point.SourceTomogram.Width;
@@ -88,27 +89,116 @@ namespace DecisionTreeClassifier.DecisionTree
 
             int u = uY * frameWidth + uX;
             int v = vY * frameHeight + vX;
+            int z = point.Y * frameWidth + point.X;
 
-            if(u < 0 || v < 0)
+            float uVal = 0f, vVal = 0f, zVal = point.SourceTomogram.Data[z];
+            if (u < 0 || v < 0)
             {
-
+                uVal = vVal = options.OutOfRangeValue;
+            }
+            else
+            {
+                uVal = point.SourceTomogram.Data[u];
+                vVal = point.SourceTomogram.Data[v];
             }
 
-            return SplitDirection.Left;
+            if ((uVal - vVal) < question.Threshold)
+            {
+                return SplitDirection.Left;
+            }
+            else
+            {
+                return SplitDirection.Right;
+            }
         }
 
-        private void RecurseAndPartition(List<LabeledPoint> trainingPoints, int currentRecursionLevel,
-            DecisionTreeOptions options, Random random)
+        private double ComputeGain(double currentShannonEntropy, List<LabeledPoint> left, List<LabeledPoint> right)
+        {
+            double leftEntropy = ComputeShannonEntropy(left);
+            double rightEntropy = ComputeShannonEntropy(right);
+
+            double leftLength = left.Count;
+            double rightLength = right.Count;
+            double totalNumberOfItems = leftLength + rightLength;
+
+            return currentShannonEntropy - (leftEntropy * (leftLength / totalNumberOfItems) +
+                rightEntropy * (rightLength / totalNumberOfItems));
+        }
+
+        private void MakeLeafNode(DecisionTreeNode currentNode, List<LabeledPoint> trainingPoints)
+        {
+            currentNode.IsLeaf = true;
+            currentNode.Class = trainingPoints.GroupBy(n => n.Label).OrderByDescending(n => n.Count()).First().Key;
+
+            return;
+        }
+
+        private void RecurseAndPartition(List<LabeledPoint> trainingPoints, List<SplittingQuestion> splittingQuestions,
+            int currentRecursionLevel, DecisionTreeOptions options, DecisionTreeNode currentNode, Random random)
         {
             if (currentRecursionLevel >= options.MaximumNumberOfRecursionLevels)
             {
                 // create leaf node
+                MakeLeafNode(currentNode, trainingPoints);
             }
             else
             {
                 double currentShannonEntropy = ComputeShannonEntropy(trainingPoints);
+                double highestGain = double.MinValue;
+                List<LabeledPoint> bestLeftBucket = null, bestRightBucket = null;
+                SplittingQuestion bestSplittingQuestion = null;
 
+                for (int s = 0; s < splittingQuestions.Count; s++)
+                {
+                    List<LabeledPoint> leftBucket = new List<LabeledPoint>();
+                    List<LabeledPoint> rightBucket = new List<LabeledPoint>();
 
+                    SplittingQuestion splittingQuestion = splittingQuestions[s];
+
+                    for (int p = 0; p < trainingPoints.Count; p++)
+                    {
+                        LabeledPoint trainingPoint = trainingPoints[p];
+
+                        SplitDirection split = ComputeSplitDirection(trainingPoint, splittingQuestion, options);
+
+                        if (split == SplitDirection.Left)
+                        {
+                            leftBucket.Add(trainingPoint);
+                        }
+                        else
+                        {
+                            rightBucket.Add(trainingPoint);
+                        }
+                    }
+
+                    double gain = ComputeGain(currentShannonEntropy, leftBucket, rightBucket);
+
+                    if (gain > highestGain)
+                    {
+                        highestGain = gain;
+                        bestLeftBucket = leftBucket;
+                        bestRightBucket = rightBucket;
+                        bestSplittingQuestion = splittingQuestion;
+                    }
+                }
+
+                if (highestGain > options.SufficientGainLevel)
+                {
+                    currentNode.Question = bestSplittingQuestion;
+                    currentNode.LeftBranch = new DecisionTreeNode();
+                    currentNode.RightBranch = new DecisionTreeNode();
+                    currentNode.IsLeaf = false;
+
+                    RecurseAndPartition(bestLeftBucket, splittingQuestions,
+                        currentRecursionLevel + 1, options, currentNode.LeftBranch, random);
+
+                    RecurseAndPartition(bestRightBucket, splittingQuestions,
+                        currentRecursionLevel + 1, options, currentNode.RightBranch, random);
+                }
+                else
+                {
+                    MakeLeafNode(currentNode, trainingPoints);
+                }
             }
         }
 
@@ -117,7 +207,10 @@ namespace DecisionTreeClassifier.DecisionTree
             List<SplittingQuestion> splittingQuestions =
                 GenerateSplittingQuestions(random, options);
 
-            RecurseAndPartition(trainingPoints, 1, options, random);
+            DecisionTreeNode root = new DecisionTreeNode();
+
+            RecurseAndPartition(trainingPoints, splittingQuestions,
+                1, options, root, random);
         }
     }
 }

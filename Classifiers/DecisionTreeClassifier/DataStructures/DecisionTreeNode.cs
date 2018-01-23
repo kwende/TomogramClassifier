@@ -12,5 +12,6 @@ namespace DecisionTreeClassifier.DataStructures
         public DecisionTreeNode LeftBranch { get; set; }
         public DecisionTreeNode RightBranch { get; set; }
         public SplittingQuestion Question { get; set; }
+        public int Class { get; set; }
     }
 }
