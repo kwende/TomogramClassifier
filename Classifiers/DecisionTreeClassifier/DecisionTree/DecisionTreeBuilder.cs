@@ -61,6 +61,39 @@ namespace DecisionTreeClassifier.DecisionTree
 
         private SplitDirection ComputeSplitDirection(LabeledPoint point, SplittingQuestion question)
         {
+            int frameHeight = point.SourceTomogram.Height;
+            int frameWidth = point.SourceTomogram.Width;
+
+            int uY = point.Y + question.OffsetUY;
+            if (uY >= frameHeight)
+            {
+                uY = -1;
+            }
+            int uX = point.X + question.OffsetUX;
+            if (uX >= frameWidth)
+            {
+                uX = -1;
+            }
+
+            int vY = point.Y + question.OffsetVY;
+            if (vY >= frameHeight)
+            {
+                vY = -1;
+            }
+            int vX = point.X + question.OffsetVX;
+            if (vX >= frameWidth)
+            {
+                vX = -1;
+            }
+
+            int u = uY * frameWidth + uX;
+            int v = vY * frameHeight + vX;
+
+            if(u < 0 || v < 0)
+            {
+
+            }
+
             return SplitDirection.Left;
         }
 
