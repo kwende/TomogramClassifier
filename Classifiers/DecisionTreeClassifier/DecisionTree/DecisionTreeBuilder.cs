@@ -7,9 +7,9 @@ using System.Text;
 
 namespace DecisionTreeClassifier.DecisionTree
 {
-    public class DecisionTreeBuilder
+    public static class DecisionTreeBuilder
     {
-        double ComputeShannonEntropy(List<LabeledPoint> trainingPoints)
+        static double ComputeShannonEntropy(List<LabeledPoint> trainingPoints)
         {
             double entropy = 0;
 
@@ -29,7 +29,7 @@ namespace DecisionTreeClassifier.DecisionTree
             return entropy;
         }
 
-        public List<SplittingQuestion> GenerateSplittingQuestions(Random random, DecisionTreeOptions options)
+        private static List<SplittingQuestion> GenerateSplittingQuestions(Random random, DecisionTreeOptions options)
         {
             List<SplittingQuestion> ret = new List<SplittingQuestion>();
 
@@ -59,7 +59,7 @@ namespace DecisionTreeClassifier.DecisionTree
             return ret;
         }
 
-        private SplitDirection ComputeSplitDirection(LabeledPoint point, SplittingQuestion question,
+        private static SplitDirection ComputeSplitDirection(LabeledPoint point, SplittingQuestion question,
             DecisionTreeOptions options)
         {
             int frameHeight = point.SourceTomogram.Height;
@@ -112,7 +112,7 @@ namespace DecisionTreeClassifier.DecisionTree
             }
         }
 
-        private double ComputeGain(double currentShannonEntropy, List<LabeledPoint> left, List<LabeledPoint> right)
+        private static double ComputeGain(double currentShannonEntropy, List<LabeledPoint> left, List<LabeledPoint> right)
         {
             double leftEntropy = ComputeShannonEntropy(left);
             double rightEntropy = ComputeShannonEntropy(right);
@@ -125,7 +125,7 @@ namespace DecisionTreeClassifier.DecisionTree
                 rightEntropy * (rightLength / totalNumberOfItems));
         }
 
-        private void MakeLeafNode(DecisionTreeNode currentNode, List<LabeledPoint> trainingPoints)
+        private static void MakeLeafNode(DecisionTreeNode currentNode, List<LabeledPoint> trainingPoints)
         {
             currentNode.IsLeaf = true;
             currentNode.Class = trainingPoints.GroupBy(n => n.Label).OrderByDescending(n => n.Count()).First().Key;
@@ -133,7 +133,7 @@ namespace DecisionTreeClassifier.DecisionTree
             return;
         }
 
-        private void RecurseAndPartition(List<LabeledPoint> trainingPoints, List<SplittingQuestion> splittingQuestions,
+        private static void RecurseAndPartition(List<LabeledPoint> trainingPoints, List<SplittingQuestion> splittingQuestions,
             int currentRecursionLevel, DecisionTreeOptions options, DecisionTreeNode currentNode, Random random)
         {
             if (currentRecursionLevel >= options.MaximumNumberOfRecursionLevels)
@@ -202,8 +202,37 @@ namespace DecisionTreeClassifier.DecisionTree
             }
         }
 
-        public void Train(List<LabeledPoint> trainingPoints, Random random, DecisionTreeOptions options)
+        private static List<LabeledPoint> TomogramsToPoints(List<LabeledTomogram> tomograms)
         {
+            List<LabeledPoint> points = new List<LabeledPoint>();
+
+            foreach (LabeledTomogram tomogram in tomograms)
+            {
+                for (int y = 0, i = 0; y < tomogram.Height; y++)
+                {
+                    for (int x = 0; x < tomogram.Width; x++, i++)
+                    {
+                        float value = tomogram.Data[i];
+
+                        points.Add(new LabeledPoint
+                        {
+                            X = x,
+                            Y = y,
+                            Z = value,
+                            Label = (int)tomogram.Labels[i],
+                            SourceTomogram = tomogram,
+                        });
+                    }
+                }
+            }
+
+            return points;
+        }
+
+        public static void Train(List<LabeledTomogram> trainingImages, Random random, DecisionTreeOptions options)
+        {
+            List<LabeledPoint> trainingPoints = TomogramsToPoints(trainingImages);
+
             List<SplittingQuestion> splittingQuestions =
                 GenerateSplittingQuestions(random, options);
 
