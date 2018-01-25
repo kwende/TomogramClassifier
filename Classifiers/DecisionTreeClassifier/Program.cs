@@ -15,7 +15,7 @@ namespace DecisionTreeClassifier
         static void Train()
         {
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            for (int c = 0; c <= 10; c++)
+            for (int c = 1; c <= 10; c++)
             {
                 string dataFile = $"C:/Users/Ben/Desktop/DataSets/data/{c}.bin";
                 string labelFile = $"C:/Users/Ben/Desktop/DataSets/labels/{c}.bin";
@@ -111,6 +111,7 @@ namespace DecisionTreeClassifier
 
         static void Main(string[] args)
         {
+            Train(); 
             Test();
         }
     }
