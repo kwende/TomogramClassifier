@@ -1,6 +1,8 @@
 ﻿using DecisionTreeClassifier.DataStructures;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace DecisionTreeClassifier.DataIO
@@ -18,7 +20,7 @@ namespace DecisionTreeClassifier.DataIO
             };
         }
 
-        private static LabeledTomogram FlipTomogram(LabeledTomogram input)
+        public static LabeledTomogram FlipTomogram(LabeledTomogram input)
         {
             LabeledTomogram ret = ShallowCopy(input);
 
@@ -27,7 +29,7 @@ namespace DecisionTreeClassifier.DataIO
                 for (int x = 0; x < input.Width; x++)
                 {
                     int sourceIndex = y * input.Width + x;
-                    int destinationIndex = (input.Height - 1 - y) * input.Width + (input.Width - 1 - x);
+                    int destinationIndex = y * input.Width + (input.Width - 1 - x);
 
                     ret.Data[destinationIndex] = input.Data[sourceIndex];
                     ret.Labels[destinationIndex] = input.Labels[sourceIndex];
@@ -37,24 +39,30 @@ namespace DecisionTreeClassifier.DataIO
             return ret;
         }
 
-        private static LabeledTomogram RotateTomogram(LabeledTomogram input, float degrees)
+        public static LabeledTomogram RotateTomogram(LabeledTomogram input, float degrees)
         {
             LabeledTomogram ret = ShallowCopy(input);
 
-            double aa = Math.Cos(degrees);
-            double ab = -Math.Sin(degrees);
-            double ba = Math.Sin(degrees);
-            double bb = Math.Cos(degrees);
+            double aa = Math.Cos(degrees * Math.PI / 180);
+            double ab = -Math.Sin(degrees * Math.PI / 180);
+            double ba = Math.Sin(degrees * Math.PI / 180);
+            double bb = Math.Cos(degrees * Math.PI / 180);
 
-            for (int y = 0; y < input.Height; y++)
+            int centerX = input.Width / 2;
+            int centerY = input.Height / 2;
+
+            int halfWidth = input.Width / 2;
+            int halfHeight = input.Height / 2;
+
+            for (int y = -halfHeight; y < halfHeight; y++)
             {
-                for (int x = 0; x < input.Width; x++)
+                for (int x = -halfWidth; x < halfWidth; x++)
                 {
                     int newX = (int)Math.Round(aa * x + ab * y);
                     int newY = (int)Math.Round(ba * x + bb * y);
 
-                    int sourceIndex = y * input.Width + x;
-                    int destinationIndex = newY * input.Width + newX;
+                    int sourceIndex = (y + halfHeight) * input.Width + (x + halfWidth);
+                    int destinationIndex = (newY + halfHeight) * input.Width + (newX + halfWidth);
 
                     if (sourceIndex >= 0 && sourceIndex < input.Data.Length &&
                         destinationIndex >= 0 && destinationIndex < input.Data.Length)
@@ -85,6 +93,35 @@ namespace DecisionTreeClassifier.DataIO
             ret.Add(RotateTomogram(flippedTomogram, 270));
 
             return ret;
+        }
+
+        public static Bitmap Tomogram2Bitmap(LabeledTomogram tomogram, int[] labels = null)
+        {
+            float minFloat = tomogram.Data.Min();
+            float maxfloat = tomogram.Data.Max();
+
+            float delta = maxfloat - minFloat;
+            float scaler = 255 / delta;
+
+            Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height);
+            for (int y = 0, i = 0; y < tomogram.Height; y++)
+            {
+                for (int x = 0; x < tomogram.Width; x++, i++)
+                {
+                    if (labels != null && labels[i] > 0)
+                    {
+                        bmp.SetPixel(x, y, System.Drawing.Color.Red);
+                    }
+                    else
+                    {
+                        byte b = (byte)((tomogram.Data[i] + Math.Abs(minFloat)) * scaler);
+
+                        bmp.SetPixel(x, y, System.Drawing.Color.FromArgb(b, b, b));
+                    }
+                }
+            }
+
+            return bmp;
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
+using System.Drawing.Imaging;
 
 namespace DecisionTreeClassifier
 {
@@ -17,8 +18,8 @@ namespace DecisionTreeClassifier
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
             for (int c = 1; c <= 10; c++)
             {
-                string dataFile = $"C:/Users/Ben/Desktop/DataSets/data/{c}.bin";
-                string labelFile = $"C:/Users/Ben/Desktop/DataSets/labels/{c}.bin";
+                string dataFile = $"C:/Users/brush/Desktop/DataSets/data/{c}.bin";
+                string labelFile = $"C:/Users/brush/Desktop/DataSets/labels/{c}.bin";
 
                 LabeledTomogram tom = DataReader.ReadTomogramPair(dataFile, labelFile, 64, 64);
 
@@ -58,7 +59,7 @@ namespace DecisionTreeClassifier
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = $"C:/Users/Ben/Desktop/DataSets/data/0.bin";
+                string file = $"C:/Users/brush/Desktop/DataSets/Data/0.bin";
 
                 LabeledTomogram tom = DataReader.ReadTomogramPair(file, null, 64, 64);
 
@@ -79,33 +80,8 @@ namespace DecisionTreeClassifier
 
                 int[] labels = DecisionTreeBuilder.Predict(tom, node, options);
 
-                float minFloat = tom.Data.Min();
-                float maxfloat = tom.Data.Max();
-
-                float delta = maxfloat - minFloat;
-                float scaler = 255 / delta;
-
-                using (Bitmap bmp = new Bitmap(tom.Width, tom.Height))
-                {
-                    for (int y = 0, i = 0; y < tom.Height; y++)
-                    {
-                        for (int x = 0; x < tom.Width; x++, i++)
-                        {
-                            if (labels[i] > 0)
-                            {
-                                bmp.SetPixel(x, y, System.Drawing.Color.Red);
-                            }
-                            else
-                            {
-                                byte b = (byte)((tom.Data[i] + Math.Abs(minFloat)) * scaler);
-
-                                bmp.SetPixel(x, y, System.Drawing.Color.FromArgb(b, b, b));
-                            }
-                        }
-                    }
-
-                    bmp.Save("c:/users/ben/desktop/test0.bmp");
-                }
+                Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom, labels);
+                bmp.Save("labeled.bmp");
             }
         }
 
