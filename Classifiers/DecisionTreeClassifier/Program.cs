@@ -22,7 +22,7 @@ namespace DecisionTreeClassifier
 
                 LabeledTomogram tom = DataReader.ReadTomogramPair(dataFile, labelFile, 64, 64);
 
-                tomograms.Add(tom);
+                tomograms.AddRange(DataManipulator.FlipAndRotateTomogram(tom));
             }
 
             DecisionTreeOptions options = new DecisionTreeOptions
@@ -104,14 +104,14 @@ namespace DecisionTreeClassifier
                         }
                     }
 
-                    bmp.Save("c:/users/ben/desktop/test0.bmp"); 
+                    bmp.Save("c:/users/ben/desktop/test0.bmp");
                 }
             }
         }
 
         static void Main(string[] args)
         {
-            Train(); 
+            Train();
             Test();
         }
     }
