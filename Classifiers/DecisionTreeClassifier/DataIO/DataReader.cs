@@ -11,7 +11,12 @@ namespace DecisionTreeClassifier.DataIO
         public static LabeledTomogram ReadTomogramPair(string dataFile, string labelFile, int width, int height)
         {
             byte[] dataFileBytes = File.ReadAllBytes(dataFile);
-            byte[] labelFileBytes = File.ReadAllBytes(labelFile);
+            byte[] labelFileBytes = null;
+
+            if (!string.IsNullOrEmpty(labelFile))
+            {
+                labelFileBytes = File.ReadAllBytes(labelFile);
+            }
 
             if (width * height != dataFileBytes.Length / sizeof(float) &&
                 width * height != labelFileBytes.Length / sizeof(float))
@@ -22,10 +27,13 @@ namespace DecisionTreeClassifier.DataIO
             LabeledTomogram ret = new LabeledTomogram();
 
             ret.Data = new float[dataFileBytes.Length / sizeof(float)];
-            ret.Labels = new float[labelFileBytes.Length / sizeof(float)];
-
             Buffer.BlockCopy(dataFileBytes, 0, ret.Data, 0, dataFileBytes.Length);
-            Buffer.BlockCopy(labelFileBytes, 0, ret.Labels, 0, labelFileBytes.Length);
+
+            if (labelFileBytes != null)
+            {
+                ret.Labels = new float[labelFileBytes.Length / sizeof(float)];
+                Buffer.BlockCopy(labelFileBytes, 0, ret.Labels, 0, labelFileBytes.Length);
+            }
 
             ret.Width = width;
             ret.Height = height;

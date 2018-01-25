@@ -13,7 +13,7 @@ namespace DecisionTreeClassifier.DataStructures
         public int OffsetYMax { get; set; }
         public int OffsetYMin { get; set; }
         public int MaximumNumberOfRecursionLevels { get; set; }
-        public int SplittingThresholdMax { get; set; }
+        public float SplittingThresholdMax { get; set; }
         public int OutOfRangeValue { get; set; }
         public double SufficientGainLevel { get; set; }
     }

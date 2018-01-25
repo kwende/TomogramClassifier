@@ -42,8 +42,8 @@ namespace DecisionTreeClassifier.DecisionTree
 
                 for (int d = 0; d < options.NumberOfThresholds; d++)
                 {
-                    int threshold =
-                        random.Next(-options.SplittingThresholdMax, options.SplittingThresholdMax);
+                    float threshold = (float)random.NextDouble() *
+                        options.SplittingThresholdMax * Math.Sign(random.Next(-1, 1));
 
                     ret.Add(new SplittingQuestion
                     {
@@ -136,6 +136,8 @@ namespace DecisionTreeClassifier.DecisionTree
         private static void RecurseAndPartition(List<LabeledPoint> trainingPoints, List<SplittingQuestion> splittingQuestions,
             int currentRecursionLevel, DecisionTreeOptions options, DecisionTreeNode currentNode, Random random)
         {
+            Console.WriteLine($"{new String('-', currentRecursionLevel)}{currentRecursionLevel}");
+
             if (currentRecursionLevel >= options.MaximumNumberOfRecursionLevels)
             {
                 // create leaf node
@@ -219,7 +221,7 @@ namespace DecisionTreeClassifier.DecisionTree
                             X = x,
                             Y = y,
                             Z = value,
-                            Label = (int)tomogram.Labels[i],
+                            Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
                             SourceTomogram = tomogram,
                         });
                     }
@@ -229,7 +231,7 @@ namespace DecisionTreeClassifier.DecisionTree
             return points;
         }
 
-        public static void Train(List<LabeledTomogram> trainingImages, Random random, DecisionTreeOptions options)
+        public static DecisionTreeNode Train(List<LabeledTomogram> trainingImages, Random random, DecisionTreeOptions options)
         {
             List<LabeledPoint> trainingPoints = TomogramsToPoints(trainingImages);
 
@@ -240,6 +242,43 @@ namespace DecisionTreeClassifier.DecisionTree
 
             RecurseAndPartition(trainingPoints, splittingQuestions,
                 1, options, root, random);
+
+            return root;
+        }
+
+        private static int RecurseAndPredict(LabeledPoint point, DecisionTreeNode node, DecisionTreeOptions options)
+        {
+            if (node.IsLeaf)
+            {
+                return node.Class;
+            }
+            else
+            {
+                SplitDirection direction = ComputeSplitDirection(point, node.Question, options);
+
+                if (direction == SplitDirection.Left)
+                {
+                    return RecurseAndPredict(point, node.LeftBranch, options);
+                }
+                else
+                {
+                    return RecurseAndPredict(point, node.RightBranch, options);
+                }
+            }
+        }
+
+        public static int[] Predict(LabeledTomogram image, DecisionTreeNode node, DecisionTreeOptions options)
+        {
+            List<LabeledPoint> points = TomogramsToPoints(new List<LabeledTomogram>(new LabeledTomogram[] { image }));
+
+            List<int> labels = new List<int>();
+
+            foreach (LabeledPoint point in points)
+            {
+                labels.Add(RecurseAndPredict(point, node, options));
+            }
+
+            return labels.ToArray();
         }
     }
 }
