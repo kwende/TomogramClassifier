@@ -1,4 +1,5 @@
-﻿using DecisionTreeClassifier.DataStructures;
+﻿using DataStructures;
+using DecisionTreeClassifier.DataStructures;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

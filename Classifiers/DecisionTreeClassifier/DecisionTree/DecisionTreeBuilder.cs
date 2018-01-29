@@ -1,9 +1,9 @@
-﻿using DecisionTreeClassifier.DataStructures;
+﻿using DataStructures;
+using DecisionTreeClassifier.DataStructures;
 using DecisionTreeClassifier.DataStructures.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DecisionTreeClassifier.DecisionTree
 {

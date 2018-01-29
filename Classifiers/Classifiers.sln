@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DecisionTreeClassifier", "DecisionTreeClassifier\DecisionTreeClassifier.csproj", "{E5801E75-CD61-4CDE-A762-0BF1AC111B14}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerVision", "ComputerVision\ComputerVision.csproj", "{BF9F3FE0-6929-47BD-8E40-B36606F4D1EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures", "DataStructures\DataStructures.csproj", "{F4CB4806-237C-4BA1-8179-FBC1D1E274E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{E5801E75-CD61-4CDE-A762-0BF1AC111B14}.Debug|Any CPU.Build.0 = Debug|x64
 		{E5801E75-CD61-4CDE-A762-0BF1AC111B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5801E75-CD61-4CDE-A762-0BF1AC111B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF9F3FE0-6929-47BD-8E40-B36606F4D1EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF9F3FE0-6929-47BD-8E40-B36606F4D1EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF9F3FE0-6929-47BD-8E40-B36606F4D1EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF9F3FE0-6929-47BD-8E40-B36606F4D1EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4CB4806-237C-4BA1-8179-FBC1D1E274E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4CB4806-237C-4BA1-8179-FBC1D1E274E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4CB4806-237C-4BA1-8179-FBC1D1E274E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4CB4806-237C-4BA1-8179-FBC1D1E274E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
