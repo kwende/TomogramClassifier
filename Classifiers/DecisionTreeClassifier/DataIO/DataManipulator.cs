@@ -96,13 +96,15 @@ namespace DecisionTreeClassifier.DataIO
             return ret;
         }
 
-        public static Bitmap Tomogram2Bitmap(LabeledTomogram tomogram, int[] labels = null)
+        public static Bitmap Tomogram2Bitmap(LabeledTomogram tomogram)
         {
             float minFloat = tomogram.Data.Min();
             float maxfloat = tomogram.Data.Max();
 
             float delta = maxfloat - minFloat;
             float scaler = 255 / delta;
+
+            float[] labels = tomogram.Labels; 
 
             Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height);
             for (int y = 0, i = 0; y < tomogram.Height; y++)

@@ -267,11 +267,11 @@ namespace DecisionTreeClassifier.DecisionTree
             }
         }
 
-        public static int[] Predict(LabeledTomogram image, DecisionTreeNode node, DecisionTreeOptions options)
+        public static float[] Predict(LabeledTomogram image, DecisionTreeNode node, DecisionTreeOptions options)
         {
             List<LabeledPoint> points = TomogramsToPoints(new List<LabeledTomogram>(new LabeledTomogram[] { image }));
 
-            List<int> labels = new List<int>();
+            List<float> labels = new List<float>();
 
             foreach (LabeledPoint point in points)
             {

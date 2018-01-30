@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
 using System.Drawing.Imaging;
 using DataStructures;
+using ComputerVision;
 
 namespace DecisionTreeClassifier
 {
@@ -60,7 +61,7 @@ namespace DecisionTreeClassifier
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = $"C:/Users/brush/Desktop/DataSets/Data/0.bin";
+                string file = $"C:/Users/ben/Desktop/DataSets/Data/0.bin";
 
                 LabeledTomogram tom = DataReader.ReadTomogramPair(file, null, 64, 64);
 
@@ -79,16 +80,24 @@ namespace DecisionTreeClassifier
                     SufficientGainLevel = 0
                 };
 
-                int[] labels = DecisionTreeBuilder.Predict(tom, node, options);
+                float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
 
-                Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom, labels);
+                tom = Morphology.Open(new LabeledTomogram
+                {
+                    Data = tom.Data,
+                    Width = tom.Width,
+                    Height = tom.Height,
+                    Labels = labels,
+                }, 1, 1);
+
+                Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
                 bmp.Save("labeled.bmp");
             }
         }
 
         static void Main(string[] args)
         {
-            Train();
+            //Train();
             Test();
         }
     }
