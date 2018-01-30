@@ -96,6 +96,28 @@ namespace DecisionTreeClassifier.DataIO
             return ret;
         }
 
+        public static Bitmap TomogramWithClusters2Bitmap(LabeledTomogram tomogram, Cluster[] clusters)
+        {
+            Color[] Colors = new Color[]
+{
+                Color.Red, Color.Blue, Color.Green, Color.Pink, Color.Orange, Color.Yellow, Color.Purple
+};
+
+            Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height);
+
+            for (int c = 0; c < Colors.Length; c++)
+            {
+                Cluster cluster = clusters[c];
+
+                foreach (Point2D point in cluster.Members)
+                {
+                    bmp.SetPixel((int)point.X, (int)point.Y, Colors[c]);
+                }
+            }
+
+            return bmp;
+        }
+
         public static Bitmap Tomogram2Bitmap(LabeledTomogram tomogram)
         {
             float minFloat = tomogram.Data.Min();
@@ -104,7 +126,7 @@ namespace DecisionTreeClassifier.DataIO
             float delta = maxfloat - minFloat;
             float scaler = 255 / delta;
 
-            float[] labels = tomogram.Labels; 
+            float[] labels = tomogram.Labels;
 
             Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height);
             for (int y = 0, i = 0; y < tomogram.Height; y++)
@@ -121,6 +143,35 @@ namespace DecisionTreeClassifier.DataIO
 
                         bmp.SetPixel(x, y, System.Drawing.Color.FromArgb(b, b, b));
                     }
+                }
+            }
+
+            return bmp;
+        }
+
+        public static Bitmap PaintCentersOnTomogram(Bitmap bmp, Point2D[] centers)
+        {
+            Color[] Colors = new Color[]
+            {
+                Color.Red, Color.Blue, Color.Green, Color.Pink, Color.Orange, Color.Yellow, Color.Purple
+            };
+
+            if (centers.Length > Colors.Length)
+                throw new ArgumentException("Need to add more colors to PaintCentersOnTomogram to handle this many centers.");
+
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                int colorIndex = 0;
+                foreach (Point2D center in centers)
+                {
+                    g.DrawRectangle(new Pen(Colors[colorIndex], 2), new Rectangle
+                    {
+                        Height = 3,
+                        Width = 3,
+                        X = (int)center.X - 1,
+                        Y = (int)center.Y - 1
+                    });
+                    colorIndex++;
                 }
             }
 

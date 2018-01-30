@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace ComputerVision
 {
@@ -12,9 +13,11 @@ namespace ComputerVision
             return (float)Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
         }
 
-        public static Point2D[] Cluster(LabeledTomogram tomogram, float epsilon, int minimumClusterSize)
+        public static Cluster[] Cluster(LabeledTomogram tomogram, float epsilon, int minimumClusterSize)
         {
-            int clusterCounter = 1;
+            List<Cluster> clusterCenters = new List<Cluster>();
+
+            int currentClusterLabel = 1;
             int[] clusterLabels = new int[tomogram.Labels.Length];
 
             List<Point2D> points = new List<Point2D>();
@@ -35,28 +38,99 @@ namespace ComputerVision
 
                 if (clusterLabels[index] == 0)
                 {
-                    List<Point2D> neighbors = new List<Point2D>();
+                    List<Point2D> cluster = new List<Point2D>();
                     foreach (Point2D otherPoint in points)
                     {
-                        if (otherPoint != point && Distance(point, otherPoint) <= epsilon)
+                        if (Distance(point, otherPoint) <= epsilon)
                         {
-                            neighbors.Add(otherPoint);
+                            cluster.Add(otherPoint);
                         }
                     }
 
-                    if (neighbors.Count >= minimumClusterSize)
+                    // is the seed cluster size big enough? 
+                    if (cluster.Count >= minimumClusterSize)
                     {
+                        // yes, expand outwards. 
+                        for (int n = 0; n < cluster.Count; n++)
+                        {
+                            Point2D clusterPoint = cluster[n];
+                            int neighborIndex = (int)(clusterPoint.Y * tomogram.Width + clusterPoint.X);
 
+                            // was this seen as noise originally? 
+                            if (clusterLabels[neighborIndex] == -1)
+                            {
+                                // yes, it's not noise afterall. 
+                                clusterLabels[neighborIndex] = currentClusterLabel;
+                            }
+                            // does this already belong to another group? 
+                            else if (clusterLabels[neighborIndex] > 0)
+                            {
+                                // yes, so drop out. look at next point. 
+                                continue;
+                            }
+                            // must be unlabeled. 
+                            else
+                            {
+                                // label it. 
+                                clusterLabels[neighborIndex] = currentClusterLabel;
+                            }
+
+                            List<Point2D> toAdd = new List<Point2D>();
+                            // find all this guy's neighbors. 
+                            foreach (Point2D otherPoint in points)
+                            {
+                                int otherPointIndex = (int)otherPoint.Y * tomogram.Width + (int)otherPoint.X;
+                                if (Distance(point, otherPoint) <= epsilon)
+                                {
+                                    toAdd.Add(otherPoint);
+                                }
+                            }
+
+                            // was this new cluster large enough? 
+                            if (toAdd.Count >= minimumClusterSize)
+                            {
+                                // yes, add it to the bunch. 
+                                cluster.AddRange(toAdd);
+                            }
+                        }
+
+                        // we're done. create new label. 
+                        currentClusterLabel++;
                     }
                     else
                     {
-                        // noise
+                        // no, it's noise
                         clusterLabels[index] = -1;
                     }
                 }
             }
 
-            return null;
+            for (int c = 1; c < currentClusterLabel; c++)
+            {
+                Cluster cluster = new Cluster();
+                Point2D averagedPoint = new Point2D();
+                int number = 0;
+
+                for (int y = 0, i = 0; y < tomogram.Height; y++)
+                {
+                    for (int x = 0; x < tomogram.Width; x++, i++)
+                    {
+                        if (clusterLabels[i] == c)
+                        {
+                            averagedPoint.X += x;
+                            averagedPoint.Y += y;
+
+                            number++;
+
+                            cluster.Members.Add(new Point2D { X = x, Y = y });
+                        }
+                    }
+                }
+
+                clusterCenters.Add(cluster);
+            }
+
+            return clusterCenters.ToArray();
         }
     }
 }

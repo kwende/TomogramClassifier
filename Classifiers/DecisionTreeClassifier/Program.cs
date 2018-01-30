@@ -61,7 +61,7 @@ namespace DecisionTreeClassifier
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = $"C:/Users/ben/Desktop/DataSets/Data/0.bin";
+                string file = $"C:/Users/brush/Desktop/DataSets/Data/0.bin";
 
                 LabeledTomogram tom = DataReader.ReadTomogramPair(file, null, 64, 64);
 
@@ -90,7 +90,10 @@ namespace DecisionTreeClassifier
                     Labels = labels,
                 }, 1, 1);
 
-                Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
+                Cluster[] clusterCenters = DbScan.Cluster(tom, 1, 5);
+
+                //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
+                Bitmap bmp = DataManipulator.TomogramWithClusters2Bitmap(tom, clusterCenters);
                 bmp.Save("labeled.bmp");
             }
         }
