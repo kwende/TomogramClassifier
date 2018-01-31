@@ -34,6 +34,7 @@ namespace ComputerVision
 
             foreach (Point2D point in points)
             {
+
                 int index = (int)(point.Y * tomogram.Width + point.X);
 
                 if (clusterLabels[index] == 0)
@@ -80,7 +81,7 @@ namespace ComputerVision
                             foreach (Point2D otherPoint in points)
                             {
                                 int otherPointIndex = (int)otherPoint.Y * tomogram.Width + (int)otherPoint.X;
-                                if (Distance(point, otherPoint) <= epsilon)
+                                if (Distance(clusterPoint, otherPoint) <= epsilon)
                                 {
                                     toAdd.Add(otherPoint);
                                 }
@@ -126,6 +127,11 @@ namespace ComputerVision
                         }
                     }
                 }
+                cluster.Center = new Point2D
+                {
+                    X = averagedPoint.X / (number * 1.0f),
+                    Y = averagedPoint.Y / (number * 1.0f),
+                };
 
                 clusterCenters.Add(cluster);
             }

@@ -96,24 +96,37 @@ namespace DecisionTreeClassifier.DataIO
             return ret;
         }
 
-        public static Bitmap TomogramWithClusters2Bitmap(LabeledTomogram tomogram, Cluster[] clusters)
+        public static Bitmap PaintCentersOnBitmap(Bitmap bmp, Cluster[] clusters)
         {
             Color[] Colors = new Color[]
-{
-                Color.Red, Color.Blue, Color.Green, Color.Pink, Color.Orange, Color.Yellow, Color.Purple
-};
-
-            Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height);
-
-            for (int c = 0; c < Colors.Length; c++)
             {
-                Cluster cluster = clusters[c];
+                Color.Red, Color.LightBlue, Color.Green, Color.Pink, Color.Orange, Color.Yellow, Color.Purple
+            };
 
-                foreach (Point2D point in cluster.Members)
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                for (int c = 0; c < clusters.Length; c++)
                 {
-                    bmp.SetPixel((int)point.X, (int)point.Y, Colors[c]);
+                    g.DrawRectangle(new Pen(Colors[c], 2), new Rectangle
+                    {
+                        Width = 5,
+                        Height = 5,
+                        X = (int)clusters[c].Center.X - 2,
+                        Y = (int)clusters[c].Center.Y
+                    });
                 }
             }
+
+
+            //for (int c = 0; c < Colors.Length && c < clusters.Length; c++)
+            //{
+            //    Cluster cluster = clusters[c];
+
+            //    foreach (Point2D point in cluster.Members)
+            //    {
+            //        bmp.SetPixel((int)point.X, (int)point.Y, Colors[c]);
+            //    }
+            //}
 
             return bmp;
         }

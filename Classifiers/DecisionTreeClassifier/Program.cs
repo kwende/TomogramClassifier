@@ -90,10 +90,12 @@ namespace DecisionTreeClassifier
                     Labels = labels,
                 }, 1, 1);
 
-                Cluster[] clusterCenters = DbScan.Cluster(tom, 1, 5);
+                Cluster[] clusterCenters = DbScan.Cluster(tom, 2.5f, 5);
 
-                //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
-                Bitmap bmp = DataManipulator.TomogramWithClusters2Bitmap(tom, clusterCenters);
+                tom.Labels = null; 
+
+                Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
+                bmp = DataManipulator.PaintCentersOnBitmap(bmp, clusterCenters);
                 bmp.Save("labeled.bmp");
             }
         }
