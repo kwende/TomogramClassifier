@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataStructures\DataStructures.csproj" />
+    <ProjectReference Include="..\Math\Maths.csproj" />
   </ItemGroup>
 
   <ItemGroup>

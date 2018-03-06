@@ -1,4 +1,5 @@
 ﻿using DataStructures;
+using Maths;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -80,11 +81,51 @@ namespace TomogramImageSimulator
             ret.MinimumVesicleRadius = 10;
             ret.MaximumVesicleRadius = 30;
             ret.MRCScaler = 0.00565638626f;
+            ret.Data = new float[width * height];
+            ret.DataClasses = new int[width * height];
 
             BuildBackground(ret);
             AddVesicles(ret);
+            BuildDataFromClasses(ret);
 
             return ret;
+        }
+
+        private static void BuildDataFromClasses(Tomogram tom)
+        {
+            int numberOfBackgroundClasses = tom.DataClasses.Where(n => n != 0).Count();
+
+            float[] classKey = new float[numberOfBackgroundClasses];
+            for (int c = 0; c < classKey.Length; c++)
+            {
+                float v = (float)RandomNormal.Next(tom.Random, 85, 15);
+                classKey[c] = v * tom.MRCScaler;
+            }
+
+            for (int y = 0, i = 0; y < tom.Height; y++)
+            {
+                for (int x = 0; x < tom.Width; x++, i++)
+                {
+                    int classNumber = tom.DataClasses[i];
+                    if (classNumber > 0 && classNumber <= tom.BackgroundDensity)
+                    {
+                        tom.Data[i] = classKey[classNumber];
+                    }
+                }
+            }
+
+            for (int y = 0, i = 0; y < tom.Height; y++)
+            {
+                for (int x = 0; x < tom.Width; x++, i++)
+                {
+                    int classNumber = tom.DataClasses[i];
+                    if (classNumber == 0)
+                    {
+                        float v = tom.Random.Next(50, 60);
+                        tom.Data[i] = v * tom.MRCScaler;
+                    }
+                }
+            }
         }
 
         private static void AddVesicles(Tomogram tom)
@@ -144,7 +185,7 @@ namespace TomogramImageSimulator
                             && y >= 0 && x >= 0 &&
                             y < tom.Height && x < tom.Width)
                         {
-                            tom.Data[y * tom.Width + x] = 0;
+                            tom.DataClasses[y * tom.Width + x] = 0;
                         }
                     }
                 }
@@ -153,7 +194,6 @@ namespace TomogramImageSimulator
 
         private static void BuildBackground(Tomogram tom)
         {
-            tom.Data = new float[tom.Width * tom.Height];
 
             Dictionary<int, List<int>> lookup = new Dictionary<int, List<int>>();
 
@@ -164,7 +204,7 @@ namespace TomogramImageSimulator
                 int y = tom.Random.Next(0, tom.Height);
                 int index = y * tom.Width + x;
 
-                tom.Data[index] = p;
+                tom.DataClasses[index] = p;
                 List<int> list = new List<int>();
                 list.Add(index);
                 lookup.Add(p, list);
@@ -194,7 +234,7 @@ namespace TomogramImageSimulator
                                     if (y >= 0 && y < tom.Height && x >= 0 && x < tom.Width)
                                     {
                                         int nextPossibleIndex = y * tom.Width + x;
-                                        if (tom.Data[nextPossibleIndex] == 0)
+                                        if (tom.DataClasses[nextPossibleIndex] == 0)
                                         {
                                             nextSteps.Add(nextPossibleIndex);
                                         }
@@ -212,7 +252,7 @@ namespace TomogramImageSimulator
                         {
                             // random step
                             int nextStep = nextSteps[tom.Random.Next(0, nextSteps.Count - 1)];
-                            tom.Data[nextStep] = p;
+                            tom.DataClasses[nextStep] = p;
 
                             lookup[p].Add(nextStep);
                         }

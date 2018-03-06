@@ -11,6 +11,7 @@ namespace DataStructures
     [Serializable]
     public class Tomogram
     {
+        public int[] DataClasses { get; set; }
         public float MRCScaler { get; set; }
         public float[] Data { get; set; }
         public int BackgroundDensity { get; set; }

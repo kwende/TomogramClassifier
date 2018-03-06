@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageSimulator
+namespace Maths
 {
     public static class RandomNormal
     {

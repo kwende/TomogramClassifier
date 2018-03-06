@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MRCSharpLib", "MRCSharpLib\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomogramImageSimulator", "TomogramImageSimulator\TomogramImageSimulator.csproj", "{DCE22C10-025B-4A32-A373-1AC48D94BE2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maths", "Math\Maths.csproj", "{701A877F-DBB6-4FCC-98A4-AD826ACFD541}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DCE22C10-025B-4A32-A373-1AC48D94BE2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCE22C10-025B-4A32-A373-1AC48D94BE2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCE22C10-025B-4A32-A373-1AC48D94BE2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{701A877F-DBB6-4FCC-98A4-AD826ACFD541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{701A877F-DBB6-4FCC-98A4-AD826ACFD541}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{701A877F-DBB6-4FCC-98A4-AD826ACFD541}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{701A877F-DBB6-4FCC-98A4-AD826ACFD541}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
