@@ -9,6 +9,11 @@ namespace DecisionTreeClassifier.DataIO
 {
     public static class DataReader
     {
+        public static LabeledTomogram ReadDatFile(string datFile)
+        {
+            return null; 
+        }
+
         public static LabeledTomogram ReadTomogramPair(string dataFile, string labelFile, int width, int height)
         {
             byte[] dataFileBytes = File.ReadAllBytes(dataFile);

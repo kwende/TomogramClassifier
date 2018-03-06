@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester\Tester.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MRCSharpLib", "MRCSharpLib\MRCSharpLib.csproj", "{C6F116C9-BE8B-49C5-A1B5-72B692BCC68B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageSimulator", "ImageSimulator\ImageSimulator.csproj", "{A816D1AF-A5AD-4A8A-A203-3CCFE4B97C7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomogramImageSimulator", "TomogramImageSimulator\TomogramImageSimulator.csproj", "{DCE22C10-025B-4A32-A373-1AC48D94BE2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{C6F116C9-BE8B-49C5-A1B5-72B692BCC68B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6F116C9-BE8B-49C5-A1B5-72B692BCC68B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6F116C9-BE8B-49C5-A1B5-72B692BCC68B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A816D1AF-A5AD-4A8A-A203-3CCFE4B97C7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A816D1AF-A5AD-4A8A-A203-3CCFE4B97C7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A816D1AF-A5AD-4A8A-A203-3CCFE4B97C7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A816D1AF-A5AD-4A8A-A203-3CCFE4B97C7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCE22C10-025B-4A32-A373-1AC48D94BE2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE22C10-025B-4A32-A373-1AC48D94BE2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE22C10-025B-4A32-A373-1AC48D94BE2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE22C10-025B-4A32-A373-1AC48D94BE2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,4 @@
-﻿using AForge.Imaging.Filters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -7,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageSimulator
+namespace DataStructures
 {
     [Serializable]
     public class Tomogram
     {
         public float MRCScaler { get; set; }
-        public int[] Data { get; set; }
+        public float[] Data { get; set; }
         public int BackgroundDensity { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
