@@ -18,7 +18,7 @@ namespace DecisionTreeClassifier
         static void Train()
         {
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            for (int c = 1; c <= 10; c++)
+            for (int c = 0; c <= 9; c++)
             {
                 string dataFile = $"C:/Users/brush/Desktop/DataSets/data/{c}.bin";
                 string labelFile = $"C:/Users/brush/Desktop/DataSets/labels/{c}.bin";
@@ -61,7 +61,7 @@ namespace DecisionTreeClassifier
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = $"C:/Users/brush/Desktop/DataSets/Data/0.bin";
+                string file = $"C:/Users/brush/Desktop/DataSets/Data/10.bin";
 
                 LabeledTomogram tom = DataReader.ReadTomogramPair(file, null, 64, 64);
 
