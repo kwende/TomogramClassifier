@@ -14,19 +14,36 @@ namespace Maths
         {
             _sigma = sigma;
             _radius = radius;
-            _kernel = new float[radius, radius];
+            _kernel = new float[radius * 2 + 1, radius * 2 + 1];
         }
 
         public float[] BlurData(float[] data, int width, int height)
         {
             float[] blurred = new float[data.Length];
 
+            for (int y = _radius; y < height - _radius; y++)
+            {
+                for (int x = _radius; x < width - _radius; x++)
+                {
+                    float value = 0.0f;
+                    for (int y1 = y - _radius, y2 = 0; y1 < y + _radius; y1++, y2++)
+                    {
+                        for (int x1 = x - _radius, x2 = 0; x1 < x + _radius; x1++, x2++)
+                        {
+                            float scaler = _kernel[x1, y1];
+                            value += data[y1 * width + x1] * scaler;
+                        }
+                    }
+                    blurred[y * width + x] = value;
+                }
+            }
+
             return blurred;
         }
 
-        public static GaussianBlur BuildBlur(float mean, int radius)
+        public static GaussianBlur BuildBlur(float sigma, int radius)
         {
-            GaussianBlur blur = new GaussianBlur(mean, radius);
+            GaussianBlur blur = new GaussianBlur(sigma, radius);
 
             double calculatedEuler = 1.0 /
                 (2.0 * Math.PI * Math.Pow(blur._sigma, 2));

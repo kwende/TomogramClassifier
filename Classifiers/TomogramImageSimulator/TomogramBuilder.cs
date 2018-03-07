@@ -114,12 +114,15 @@ namespace TomogramImageSimulator
                 }
             }
 
+            GaussianBlur blur = GaussianBlur.BuildBlur(1.0f, 5);
+            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height); 
+
             for (int y = 0, i = 0; y < tom.Height; y++)
             {
                 for (int x = 0; x < tom.Width; x++, i++)
                 {
                     int classNumber = tom.DataClasses[i];
-                    if (classNumber == 0)
+                    if (classNumber == -1)
                     {
                         float v = tom.Random.Next(50, 60);
                         tom.Data[i] = v * tom.MRCScaler;
@@ -185,7 +188,7 @@ namespace TomogramImageSimulator
                             && y >= 0 && x >= 0 &&
                             y < tom.Height && x < tom.Width)
                         {
-                            tom.DataClasses[y * tom.Width + x] = 0;
+                            tom.DataClasses[y * tom.Width + x] = -1;
                         }
                     }
                 }
