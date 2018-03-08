@@ -32,41 +32,35 @@ namespace TomogramImageSimulator
             //    colors[c] = Color.FromArgb(b, b, b);
             //}
 
-            //using (Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height))
-            //{
-            //    for (int y = 0, i = 0; y < bmp.Height; y++)
-            //    {
-            //        for (int x = 0; x < bmp.Width; x++, i++)
-            //        {
-            //            int colorIndex = tomogram.Data[i];
-            //            if (colorIndex > 0 && colorIndex <= tomogram.BackgroundDensity)
-            //            {
-            //                bmp.SetPixel(x, y, colors[colorIndex - 1]);
-            //            }
-            //        }
-            //    }
+            using (Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height))
+            {
+                for (int y = 0, i = 0; y < bmp.Height; y++)
+                {
+                    for (int x = 0; x < bmp.Width; x++, i++)
+                    {
+                        byte value = (byte)(tomogram.Data[i] * (1 / tomogram.MRCScaler));
+                        if (value > 0)
+                        {
+                            bmp.SetPixel(x, y, Color.FromArgb(value, value, value));
+                        }
+                    }
+                }
 
-            //    GaussianBlur blur = new GaussianBlur(1, 8);
-            //    blur.ApplyInPlace(bmp);
+                //for (int y = 0, i = 0; y < bmp.Height; y++)
+                //{
+                //    for (int x = 0; x < bmp.Width; x++, i++)
+                //    {
+                //        int colorIndex = tomogram.Data[i];
+                //        if (colorIndex == 0)
+                //        {
+                //            byte b = (byte)tomogram.Random.Next(50, 60);
+                //            bmp.SetPixel(x, y, Color.FromArgb(b, b, b));
+                //        }
+                //    }
+                //}
 
-            //    for (int y = 0, i = 0; y < bmp.Height; y++)
-            //    {
-            //        for (int x = 0; x < bmp.Width; x++, i++)
-            //        {
-            //            int colorIndex = tomogram.Data[i];
-            //            if (colorIndex == 0)
-            //            {
-            //                byte b = (byte)tomogram.Random.Next(50, 60);
-            //                bmp.SetPixel(x, y, Color.FromArgb(b, b, b));
-            //            }
-            //        }
-            //    }
-
-            //    blur = new GaussianBlur(1, 8);
-            //    blur.ApplyInPlace(bmp);
-
-            //    bmp.Save(path);
-            //}
+                bmp.Save(path);
+            }
         }
 
         public static Tomogram BuildTomogram(int width, int height,
@@ -114,8 +108,8 @@ namespace TomogramImageSimulator
                 }
             }
 
-            GaussianBlur blur = GaussianBlur.BuildBlur(1.0f, 5);
-            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height); 
+            GaussianBlur blur = GaussianBlur.BuildBlur(2.0f, 4);
+            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
 
             for (int y = 0, i = 0; y < tom.Height; y++)
             {
@@ -129,6 +123,8 @@ namespace TomogramImageSimulator
                     }
                 }
             }
+
+            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
         }
 
         private static void AddVesicles(Tomogram tom)

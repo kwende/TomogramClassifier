@@ -30,7 +30,7 @@ namespace Maths
                     {
                         for (int x1 = x - _radius, x2 = 0; x1 < x + _radius; x1++, x2++)
                         {
-                            float scaler = _kernel[x1, y1];
+                            float scaler = _kernel[x2, y2];
                             value += data[y1 * width + x1] * scaler;
                         }
                     }
