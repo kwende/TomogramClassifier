@@ -80,12 +80,13 @@ namespace TomogramImageSimulator
 
             BuildBackground(ret);
             AddVesicles(ret);
-            BuildDataFromClasses(ret);
+
+            FinalizeFrame(ret);
 
             return ret;
         }
 
-        private static void BuildDataFromClasses(Tomogram tom)
+        private static void FinalizeFrame(Tomogram tom)
         {
             int numberOfBackgroundClasses = tom.DataClasses.Where(n => n != 0).Count();
 

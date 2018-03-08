@@ -3,6 +3,7 @@ using DecisionTreeClassifier.DataStructures;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace DecisionTreeClassifier.DataIO
@@ -11,7 +12,31 @@ namespace DecisionTreeClassifier.DataIO
     {
         public static LabeledTomogram ReadDatFile(string datFile)
         {
-            return null; 
+            using (FileStream fin = File.OpenRead(datFile))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                Tomogram tom = (Tomogram)bf.Deserialize(fin);
+
+                LabeledTomogram l = new LabeledTomogram();
+                l.Data = tom.Data;
+                l.Width = tom.Width;
+                l.Height = tom.Height;
+                l.Labels = new float[l.Data.Length];
+
+                for (int c = 0; c < l.Labels.Length; c++)
+                {
+                    if (tom.DataClasses[c] == -1)
+                    {
+                        l.Labels[c] = 1;
+                    }
+                    else
+                    {
+                        l.Labels[c] = 0;
+                    }
+                }
+
+                return l;
+            }
         }
 
         public static LabeledTomogram ReadTomogramPair(string dataFile, string labelFile, int width, int height)

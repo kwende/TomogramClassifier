@@ -4,6 +4,8 @@ using DecisionTreeClassifier.DataStructures.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DecisionTreeClassifier.DecisionTree
 {
@@ -88,7 +90,7 @@ namespace DecisionTreeClassifier.DecisionTree
             }
 
             int u = uY * frameWidth + uX;
-            int v = vY * frameHeight + vX;
+            int v = vY * frameWidth + vX;
             int z = point.Y * frameWidth + point.X;
 
             float uVal = 0f, vVal = 0f, zVal = point.SourceTomogram.Data[z];
@@ -150,8 +152,12 @@ namespace DecisionTreeClassifier.DecisionTree
                 List<LabeledPoint> bestLeftBucket = null, bestRightBucket = null;
                 SplittingQuestion bestSplittingQuestion = null;
 
-                for (int s = 0; s < splittingQuestions.Count; s++)
+                //for (int s = 0; s < splittingQuestions.Count; s++)
+                int t = 0; 
+                Parallel.For(0, splittingQuestions.Count, s =>
                 {
+                    Interlocked.Increment(ref t); 
+                    Console.WriteLine($"{t}/{splittingQuestions.Count}");
                     List<LabeledPoint> leftBucket = new List<LabeledPoint>();
                     List<LabeledPoint> rightBucket = new List<LabeledPoint>();
 
@@ -175,14 +181,17 @@ namespace DecisionTreeClassifier.DecisionTree
 
                     double gain = ComputeGain(currentShannonEntropy, leftBucket, rightBucket);
 
-                    if (gain > highestGain)
+                    lock(typeof(DecisionTreeBuilder))
                     {
-                        highestGain = gain;
-                        bestLeftBucket = leftBucket;
-                        bestRightBucket = rightBucket;
-                        bestSplittingQuestion = splittingQuestion;
+                        if (gain > highestGain)
+                        {
+                            highestGain = gain;
+                            bestLeftBucket = leftBucket;
+                            bestRightBucket = rightBucket;
+                            bestSplittingQuestion = splittingQuestion;
+                        }
                     }
-                }
+                }); 
 
                 if (highestGain > options.SufficientGainLevel)
                 {
@@ -204,7 +213,8 @@ namespace DecisionTreeClassifier.DecisionTree
             }
         }
 
-        private static List<LabeledPoint> TomogramsToPoints(List<LabeledTomogram> tomograms)
+        private static List<LabeledPoint> TomogramsToPoints(List<LabeledTomogram> tomograms,
+            Random random, DecisionTreeOptions options)
         {
             List<LabeledPoint> points = new List<LabeledPoint>();
 
@@ -214,16 +224,19 @@ namespace DecisionTreeClassifier.DecisionTree
                 {
                     for (int x = 0; x < tomogram.Width; x++, i++)
                     {
-                        float value = tomogram.Data[i];
-
-                        points.Add(new LabeledPoint
+                        if (random != null && random.NextDouble() < options.PercentageOfPixelsToUse)
                         {
-                            X = x,
-                            Y = y,
-                            Z = value,
-                            Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
-                            SourceTomogram = tomogram,
-                        });
+                            float value = tomogram.Data[i];
+
+                            points.Add(new LabeledPoint
+                            {
+                                X = x,
+                                Y = y,
+                                Z = value,
+                                Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
+                                SourceTomogram = tomogram,
+                            });
+                        }
                     }
                 }
             }
@@ -233,13 +246,16 @@ namespace DecisionTreeClassifier.DecisionTree
 
         public static DecisionTreeNode Train(List<LabeledTomogram> trainingImages, Random random, DecisionTreeOptions options)
         {
-            List<LabeledPoint> trainingPoints = TomogramsToPoints(trainingImages);
+            Console.WriteLine("Building points..."); 
+            List<LabeledPoint> trainingPoints = TomogramsToPoints(trainingImages, random, options);
 
+            Console.WriteLine("Build splitting questions..."); 
             List<SplittingQuestion> splittingQuestions =
                 GenerateSplittingQuestions(random, options);
 
             DecisionTreeNode root = new DecisionTreeNode();
 
+            Console.WriteLine("Recurse and partition..."); 
             RecurseAndPartition(trainingPoints, splittingQuestions,
                 1, options, root, random);
 
@@ -269,7 +285,8 @@ namespace DecisionTreeClassifier.DecisionTree
 
         public static float[] Predict(LabeledTomogram image, DecisionTreeNode node, DecisionTreeOptions options)
         {
-            List<LabeledPoint> points = TomogramsToPoints(new List<LabeledTomogram>(new LabeledTomogram[] { image }));
+            List<LabeledPoint> points = TomogramsToPoints(
+                new List<LabeledTomogram>(new LabeledTomogram[] { image }), null, null);
 
             List<float> labels = new List<float>();
 

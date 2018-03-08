@@ -17,16 +17,21 @@ namespace DecisionTreeClassifier
     {
         static void Train()
         {
+            Console.WriteLine("Loading shit..."); 
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            for (int c = 0; c <= 9; c++)
+            string[] files = Directory.GetFiles(@"C:\Users\Ben\Desktop\Toms", "*.dat").Take(10).ToArray();
+            int i = 0; 
+            foreach (string file in files)
             {
-                string dataFile = $"C:/Users/brush/Desktop/DataSets/data/{c}.bin";
-                string labelFile = $"C:/Users/brush/Desktop/DataSets/labels/{c}.bin";
+                Console.WriteLine($"{i + 1}/{files.Length}");
+                i++; 
+                //string dataFile = $"C:/Users/brush/Desktop/DataSets/data/{c}.bin";
+                //string labelFile = $"C:/Users/brush/Desktop/DataSets/labels/{c}.bin";
 
-                LabeledTomogram tom = DataReader.ReadTomogramPair(dataFile, labelFile, 64, 64);
-
+                LabeledTomogram tom = DataReader.ReadDatFile(file);
                 tomograms.AddRange(DataManipulator.FlipAndRotateTomogram(tom));
             }
+            Console.WriteLine("...shit loaded."); 
 
             DecisionTreeOptions options = new DecisionTreeOptions
             {
@@ -34,13 +39,14 @@ namespace DecisionTreeClassifier
                 MaximumNumberOfRecursionLevels = 20,
                 NumberOfFeatures = 250,
                 NumberOfThresholds = 25,
-                OffsetXMax = 10,
-                OffsetXMin = -10,
-                OffsetYMax = 10,
-                OffsetYMin = -10,
+                OffsetXMax = 100,
+                OffsetXMin = -100,
+                OffsetYMax = 100,
+                OffsetYMin = -100,
                 OutOfRangeValue = 1000000,
                 SplittingThresholdMax = .2f,
-                SufficientGainLevel = 0
+                SufficientGainLevel = 0,
+                PercentageOfPixelsToUse = .9f
             };
 
             DecisionTreeNode node = DecisionTreeBuilder.Train(tomograms, new Random(1234), options);
@@ -92,7 +98,7 @@ namespace DecisionTreeClassifier
 
                 Cluster[] clusterCenters = DbScan.Cluster(tom, 2.5f, 5);
 
-                tom.Labels = null; 
+                tom.Labels = null;
 
                 Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
                 bmp = DataManipulator.PaintCentersOnBitmap(bmp, clusterCenters);
@@ -102,8 +108,8 @@ namespace DecisionTreeClassifier
 
         static void Main(string[] args)
         {
-            //Train();
-            Test();
+            Train();
+            //Test();
         }
     }
 }

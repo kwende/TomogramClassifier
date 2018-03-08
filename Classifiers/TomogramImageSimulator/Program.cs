@@ -10,8 +10,8 @@ namespace TomogramImageSimulator
         static void Main(string[] args)
         {
             int counter = 0;
-            for (int c = 0; c < 1000; c++)
-            //Parallel.For(0, 5, c =>
+            //for (int c = 0; c < 1000; c++)
+            Parallel.For(0, 5000, c =>
             {
                 Random rand = new Random(c);
 
@@ -24,8 +24,8 @@ namespace TomogramImageSimulator
 
                 Tomogram tom = TomogramBuilder.BuildTomogram(860, 934, 100000, rand.Next(5, 25));
                 TomogramBuilder.SaveAsBitmap(tom, $"C:/users/ben/desktop/toms/{c}.bmp");
-                //TomogramBuilder.SaveAsDatFile(tom, $"C:/users/ben/desktop/toms/{c}.dat");
-            }//);
+                TomogramBuilder.SaveAsDatFile(tom, $"C:/users/ben/desktop/toms/{c}.dat");
+            });
         }
     }
 }

@@ -16,5 +16,6 @@ namespace DecisionTreeClassifier.DataStructures
         public float SplittingThresholdMax { get; set; }
         public int OutOfRangeValue { get; set; }
         public double SufficientGainLevel { get; set; }
+        public float PercentageOfPixelsToUse { get; set; }
     }
 }
