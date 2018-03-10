@@ -216,6 +216,9 @@ namespace DecisionTreeClassifier.DecisionTree
                         }
                     }
 
+                    Console.WriteLine($"Left bucket has {bestLeftBucket.Count} items.");
+                    Console.WriteLine($"Right bucket has {bestRightBucket.Count} items.");
+
                     currentNode.Question = bestSplittingQuestion;
                     currentNode.LeftBranch = new DecisionTreeNode();
                     currentNode.RightBranch = new DecisionTreeNode();
