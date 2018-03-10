@@ -19,7 +19,7 @@ namespace DecisionTreeClassifier
         {
             Console.WriteLine("Loading shit..."); 
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            string[] files = Directory.GetFiles(@"C:\Users\Ben\Desktop\Toms", "*.dat").Take(10).ToArray();
+            string[] files = Directory.GetFiles(@"C:\Users\brush\Desktop\Toms2", "*.dat").Take(10).ToArray();
             int i = 0; 
             foreach (string file in files)
             {
@@ -46,7 +46,7 @@ namespace DecisionTreeClassifier
                 OutOfRangeValue = 1000000,
                 SplittingThresholdMax = .2f,
                 SufficientGainLevel = 0,
-                PercentageOfPixelsToUse = .9f
+                PercentageOfPixelsToUse = .1f
             };
 
             DecisionTreeNode node = DecisionTreeBuilder.Train(tomograms, new Random(1234), options);
@@ -83,7 +83,7 @@ namespace DecisionTreeClassifier
                     OffsetYMin = -10,
                     OutOfRangeValue = 1000000,
                     SplittingThresholdMax = .2f,
-                    SufficientGainLevel = 0
+                    SufficientGainLevel = 0,
                 };
 
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
