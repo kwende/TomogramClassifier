@@ -19,7 +19,7 @@ namespace DecisionTreeClassifier
         {
             Console.WriteLine("Loading shit..."); 
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            string[] files = Directory.GetFiles(@"C:\Users\ben\Desktop\Toms2", "*.dat").Take(1).ToArray();
+            string[] files = Directory.GetFiles(@".", "*.dat").Take(5).ToArray();
             int i = 0; 
             foreach (string file in files)
             {
@@ -63,13 +63,13 @@ namespace DecisionTreeClassifier
         static void Test()
         {
             BinaryFormatter bf = new BinaryFormatter();
-            using (FileStream fs = File.OpenRead("serialized.dat"))
+            using (FileStream fs = File.OpenRead("c:/users/ben/desktop/serialized.dat"))
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = $"C:/Users/brush/Desktop/DataSets/Data/10.bin";
+                string file = @"C:\Users\Ben\Desktop\Toms2\1.dat";
 
-                LabeledTomogram tom = DataReader.ReadTomogramPair(file, null, 64, 64);
+                LabeledTomogram tom = DataReader.ReadDatFile(file);
 
                 DecisionTreeOptions options = new DecisionTreeOptions
                 {
@@ -77,32 +77,36 @@ namespace DecisionTreeClassifier
                     MaximumNumberOfRecursionLevels = 20,
                     NumberOfFeatures = 250,
                     NumberOfThresholds = 25,
-                    OffsetXMax = 10,
-                    OffsetXMin = -10,
-                    OffsetYMax = 10,
-                    OffsetYMin = -10,
+                    OffsetXMax = 100,
+                    OffsetXMin = -100,
+                    OffsetYMax = 100,
+                    OffsetYMin = -100,
                     OutOfRangeValue = 1000000,
                     SplittingThresholdMax = .2f,
                     SufficientGainLevel = 0,
+                    PercentageOfPixelsToUse = .1f
                 };
 
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
 
-                tom = Morphology.Open(new LabeledTomogram
-                {
-                    Data = tom.Data,
-                    Width = tom.Width,
-                    Height = tom.Height,
-                    Labels = labels,
-                }, 1, 1);
+                Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
+                bmp.Save("labeled.bmp"); 
 
-                Cluster[] clusterCenters = DbScan.Cluster(tom, 2.5f, 5);
+                //tom = Morphology.Open(new LabeledTomogram
+                //{
+                //    Data = tom.Data,
+                //    Width = tom.Width,
+                //    Height = tom.Height,
+                //    Labels = labels,
+                //}, 1, 1);
 
-                tom.Labels = null;
+                //Cluster[] clusterCenters = DbScan.Cluster(tom, 2.5f, 5);
 
-                Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
-                bmp = DataManipulator.PaintCentersOnBitmap(bmp, clusterCenters);
-                bmp.Save("labeled.bmp");
+                //tom.Labels = null;
+
+                //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
+                //bmp = DataManipulator.PaintCentersOnBitmap(bmp, clusterCenters);
+                //bmp.Save("labeled.bmp");
             }
         }
 

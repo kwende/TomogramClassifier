@@ -96,6 +96,28 @@ namespace DecisionTreeClassifier.DataIO
             return ret;
         }
 
+        internal static Bitmap PaintClassifiedPixelsOnTomogram(LabeledTomogram tom, float[] labels)
+        {
+            tom.Labels = new float[tom.Width * tom.Height];
+            Bitmap bmp = Tomogram2Bitmap(tom); 
+
+            //using (Bitmap bmp = Tomogram2Bitmap(tom))
+            {
+                for (int y = 0, i = 0; y < bmp.Height; y++)
+                {
+                    for (int x = 0; x < bmp.Width; x++, i++)
+                    {
+                        if (labels[i] > 0)
+                        {
+                            bmp.SetPixel(x, y, Color.Red);
+                        }
+                    }
+                }
+            }
+
+            return bmp; 
+        }
+
         public static Bitmap PaintCentersOnBitmap(Bitmap bmp, Cluster[] clusters)
         {
             Color[] Colors = new Color[]

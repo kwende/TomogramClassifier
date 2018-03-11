@@ -250,8 +250,8 @@ namespace DecisionTreeClassifier.DecisionTree
                     {
                         float value = tomogram.Data[i];
 
-                        int label = (int)tomogram.Labels[i];
-                        if (label == 1)
+                        //int label = (int)tomogram.Labels[i];
+                        //if (label == 1)
                         {
                             points.Add(new LabeledPoint
                             {
@@ -262,20 +262,20 @@ namespace DecisionTreeClassifier.DecisionTree
                                 SourceTomogram = tomogram,
                             });
                         }
-                        else
-                        {
-                            if (random != null && random.NextDouble() < options.PercentageOfPixelsToUse)
-                            {
-                                points.Add(new LabeledPoint
-                                {
-                                    X = x,
-                                    Y = y,
-                                    Z = value,
-                                    Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
-                                    SourceTomogram = tomogram,
-                                });
-                            }
-                        }
+                        //else
+                        //{
+                        //    if (random != null && random.NextDouble() < options.PercentageOfPixelsToUse)
+                        //    {
+                        //        points.Add(new LabeledPoint
+                        //        {
+                        //            X = x,
+                        //            Y = y,
+                        //            Z = value,
+                        //            Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
+                        //            SourceTomogram = tomogram,
+                        //        });
+                        //    }
+                        //}
                     }
                 }
             }
