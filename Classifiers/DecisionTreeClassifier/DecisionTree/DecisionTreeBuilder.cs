@@ -156,6 +156,7 @@ namespace DecisionTreeClassifier.DecisionTree
                 int t = 0;
                 Parallel.For(0, splittingQuestions.Count, s =>
                 {
+                    //Console.Write("."); 
                     //Interlocked.Increment(ref t);
                     //Console.WriteLine($"{t}/{splittingQuestions.Count}");
 
@@ -216,9 +217,6 @@ namespace DecisionTreeClassifier.DecisionTree
                         }
                     }
 
-                    Console.WriteLine($"Left bucket has {bestLeftBucket.Count} items.");
-                    Console.WriteLine($"Right bucket has {bestRightBucket.Count} items.");
-
                     currentNode.Question = bestSplittingQuestion;
                     currentNode.LeftBranch = new DecisionTreeNode();
                     currentNode.RightBranch = new DecisionTreeNode();
@@ -232,6 +230,7 @@ namespace DecisionTreeClassifier.DecisionTree
                 }
                 else
                 {
+                    Console.WriteLine($"Gain at {highestGain}, making leaf node."); 
                     MakeLeafNode(currentNode, trainingPoints);
                 }
             }
@@ -250,8 +249,8 @@ namespace DecisionTreeClassifier.DecisionTree
                     {
                         float value = tomogram.Data[i];
 
-                        //int label = (int)tomogram.Labels[i];
-                        //if (label == 1)
+                        int label = (int)tomogram.Labels[i];
+                        if (label == 1)
                         {
                             points.Add(new LabeledPoint
                             {
@@ -262,20 +261,20 @@ namespace DecisionTreeClassifier.DecisionTree
                                 SourceTomogram = tomogram,
                             });
                         }
-                        //else
-                        //{
-                        //    if (random != null && random.NextDouble() < options.PercentageOfPixelsToUse)
-                        //    {
-                        //        points.Add(new LabeledPoint
-                        //        {
-                        //            X = x,
-                        //            Y = y,
-                        //            Z = value,
-                        //            Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
-                        //            SourceTomogram = tomogram,
-                        //        });
-                        //    }
-                        //}
+                        else
+                        {
+                            if (random != null && random.NextDouble() < options.PercentageOfPixelsToUse)
+                            {
+                                points.Add(new LabeledPoint
+                                {
+                                    X = x,
+                                    Y = y,
+                                    Z = value,
+                                    Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
+                                    SourceTomogram = tomogram,
+                                });
+                            }
+                        }
                     }
                 }
             }

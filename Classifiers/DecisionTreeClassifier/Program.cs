@@ -19,7 +19,7 @@ namespace DecisionTreeClassifier
         {
             Console.WriteLine("Loading shit..."); 
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            string[] files = Directory.GetFiles(@".", "*.dat").Take(5).ToArray();
+            string[] files = Directory.GetFiles(@"c:/users/brush/desktop/toms2", "*.dat").Take(5).ToArray();
             int i = 0; 
             foreach (string file in files)
             {
