@@ -11,26 +11,6 @@ namespace DecisionTreeClassifier.DecisionTree
 {
     public static class DecisionTreeBuilder
     {
-        static double ComputeShannonEntropy(List<LabeledPoint> trainingPoints)
-        {
-            double entropy = 0;
-
-            // count number of classes
-            double totalCount = trainingPoints.Count();// n => n.Label != 0);
-            //IEnumerable<int> allLabels = trainingPoints.Select(n => n.Label).Distinct();
-
-            if (totalCount > 0)
-            {
-                //foreach (int label in allLabels)
-                for (int label = 0; label <= 1; label++)
-                {
-                    double ratio = trainingPoints.Count(n => n.Label == label) / totalCount;
-                    entropy += -(ratio * Math.Log(ratio, 2));
-                }
-            }
-
-            return entropy;
-        }
 
         private static List<SplittingQuestion> GenerateSplittingQuestions(Random random, DecisionTreeOptions options)
         {
@@ -115,7 +95,63 @@ namespace DecisionTreeClassifier.DecisionTree
             }
         }
 
-        private static double ComputeGain(double currentShannonEntropy, List<LabeledPoint> left, List<LabeledPoint> right)
+        private static double ComputeShannonEntropy(List<LabeledPointGroup> groups)
+        {
+            double entropy = 0;
+
+            // count number of classes
+            double totalCount = groups.Sum(n => n.Count);
+
+            if (totalCount > 0)
+            {
+                foreach (LabeledPointGroup group in groups)
+                //for (int label = 0; label <= 1; label++)
+                {
+                    double ratio = group.Count / totalCount;
+                    entropy += -(ratio * Math.Log(ratio, 2));
+                }
+            }
+
+            return entropy;
+        }
+
+        static double ComputeShannonEntropy(List<LabeledPoint> trainingPoints)
+        {
+            double entropy = 0;
+
+            // count number of classes
+            double totalCount = trainingPoints.Count();// n => n.Label != 0);
+            //IEnumerable<int> allLabels = trainingPoints.Select(n => n.Label).Distinct();
+
+            if (totalCount > 0)
+            {
+                //foreach (int label in allLabels)
+                for (int label = 0; label <= 1; label++)
+                {
+                    double ratio = trainingPoints.Count(n => n.Label == label) / totalCount;
+                    entropy += -(ratio * Math.Log(ratio, 2));
+                }
+            }
+
+            return entropy;
+        }
+
+        private static double ComputeGain(double currentShannonEntropy, List<LabeledPointGroup> leftGroup,
+            List<LabeledPointGroup> rightGroup)
+        {
+            double leftEntropy = ComputeShannonEntropy(leftGroup);
+            double rightEntropy = ComputeShannonEntropy(rightGroup);
+
+            double leftLength = leftGroup.Sum(n => n.Count);
+            double rightLength = rightGroup.Sum(n => n.Count);
+            double totalNumberOfItems = leftLength + rightLength;
+
+            return currentShannonEntropy - (leftEntropy * (leftLength / totalNumberOfItems) +
+                rightEntropy * (rightLength / totalNumberOfItems));
+        }
+
+        private static double ComputeGain(double currentShannonEntropy, List<LabeledPoint> left,
+            List<LabeledPoint> right)
         {
             double leftEntropy = ComputeShannonEntropy(left);
             double rightEntropy = ComputeShannonEntropy(right);
@@ -153,15 +189,37 @@ namespace DecisionTreeClassifier.DecisionTree
                 SplittingQuestion bestSplittingQuestion = null;
 
                 //for (int s = 0; s < splittingQuestions.Count; s++)
-                int t = 0;
                 Parallel.For(0, splittingQuestions.Count, s =>
                 {
                     //Console.Write("."); 
                     //Interlocked.Increment(ref t);
                     //Console.WriteLine($"{t}/{splittingQuestions.Count}");
 
-                    List<LabeledPoint> leftBucket = new List<LabeledPoint>();
-                    List<LabeledPoint> rightBucket = new List<LabeledPoint>();
+                    //List<LabeledPoint> leftBucket1 = new List<LabeledPoint>();
+                    //List<LabeledPoint> rightBucket1 = new List<LabeledPoint>();
+
+                    List<LabeledPointGroup> leftBucket = new List<LabeledPointGroup>();
+                    leftBucket.Add(new LabeledPointGroup
+                    {
+                        Count = 0,
+                        Class = 0
+                    });
+                    leftBucket.Add(new LabeledPointGroup
+                    {
+                        Count = 0,
+                        Class = 1
+                    });
+                    List<LabeledPointGroup> rightBucket = new List<LabeledPointGroup>();
+                    rightBucket.Add(new LabeledPointGroup
+                    {
+                        Count = 0,
+                        Class = 0
+                    });
+                    rightBucket.Add(new LabeledPointGroup
+                    {
+                        Count = 0,
+                        Class = 1
+                    });
 
                     SplittingQuestion splittingQuestion = splittingQuestions[s];
 
@@ -175,15 +233,18 @@ namespace DecisionTreeClassifier.DecisionTree
 
                             if (split == SplitDirection.Left)
                             {
-                                leftBucket.Add(trainingPoint);
+                                leftBucket[trainingPoint.Label].Count++;
+                                //leftBucket1.Add(trainingPoint);
                             }
                             else
                             {
-                                rightBucket.Add(trainingPoint);
+                                //rightBucket1.Add(trainingPoint);
+                                rightBucket[trainingPoint.Label].Count++;
                             }
                         }
                     }
 
+                    //double gain1 = ComputeGain(currentShannonEntropy, leftBucket1, rightBucket1); 
                     double gain = ComputeGain(currentShannonEntropy, leftBucket, rightBucket);
 
                     lock (typeof(DecisionTreeBuilder))
@@ -222,6 +283,9 @@ namespace DecisionTreeClassifier.DecisionTree
                     currentNode.RightBranch = new DecisionTreeNode();
                     currentNode.IsLeaf = false;
 
+                    splittingQuestions =
+                        GenerateSplittingQuestions(random, options);
+
                     RecurseAndPartition(bestLeftBucket, splittingQuestions,
                         currentRecursionLevel + 1, options, currentNode.LeftBranch, random);
 
@@ -230,7 +294,6 @@ namespace DecisionTreeClassifier.DecisionTree
                 }
                 else
                 {
-                    Console.WriteLine($"Gain at {highestGain}, making leaf node."); 
                     MakeLeafNode(currentNode, trainingPoints);
                 }
             }
@@ -249,21 +312,10 @@ namespace DecisionTreeClassifier.DecisionTree
                     {
                         float value = tomogram.Data[i];
 
-                        int label = (int)tomogram.Labels[i];
-                        if (label == 1)
+                        if (random != null)
                         {
-                            points.Add(new LabeledPoint
-                            {
-                                X = x,
-                                Y = y,
-                                Z = value,
-                                Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
-                                SourceTomogram = tomogram,
-                            });
-                        }
-                        else
-                        {
-                            if (random != null && random.NextDouble() < options.PercentageOfPixelsToUse)
+                            int label = (int)tomogram.Labels[i];
+                            if (label == 1)
                             {
                                 points.Add(new LabeledPoint
                                 {
@@ -274,6 +326,30 @@ namespace DecisionTreeClassifier.DecisionTree
                                     SourceTomogram = tomogram,
                                 });
                             }
+                            else
+                            {
+                                if (random.NextDouble() < options.PercentageOfPixelsToUse)
+                                {
+                                    points.Add(new LabeledPoint
+                                    {
+                                        X = x,
+                                        Y = y,
+                                        Z = value,
+                                        Label = tomogram.Labels != null ? (int)tomogram.Labels[i] : -1,
+                                        SourceTomogram = tomogram,
+                                    });
+                                }
+                            }
+                        }
+                        else
+                        {
+                            points.Add(new LabeledPoint
+                            {
+                                X = x,
+                                Y = y,
+                                Z = value,
+                                SourceTomogram = tomogram,
+                            });
                         }
                     }
                 }

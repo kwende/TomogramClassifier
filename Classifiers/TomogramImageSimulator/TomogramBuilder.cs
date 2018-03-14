@@ -72,8 +72,8 @@ namespace TomogramImageSimulator
             ret.BackgroundDensity = backgroundDensity;
             ret.VesicleCount = vesicleCount;
             ret.Random = new Random();
-            ret.MinimumVesicleRadius = 10;
-            ret.MaximumVesicleRadius = 30;
+            ret.MinimumVesicleRadius = 20;
+            ret.MaximumVesicleRadius = 20;
             ret.MRCScaler = 0.00565638626f;
             ret.Data = new float[width * height];
             ret.DataClasses = new int[width * height];

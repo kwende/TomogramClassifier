@@ -19,7 +19,7 @@ namespace DecisionTreeClassifier
         {
             Console.WriteLine("Loading shit..."); 
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            string[] files = Directory.GetFiles(@"c:/users/brush/desktop/toms2", "*.dat").Take(5).ToArray();
+            string[] files = Directory.GetFiles(@"c:/users/brush/desktop/toms2", "*.dat").Take(1).ToArray();
             int i = 0; 
             foreach (string file in files)
             {
@@ -36,13 +36,13 @@ namespace DecisionTreeClassifier
             DecisionTreeOptions options = new DecisionTreeOptions
             {
                 // TODO: Fill in
-                MaximumNumberOfRecursionLevels = 20,
-                NumberOfFeatures = 250,
-                NumberOfThresholds = 25,
-                OffsetXMax = 100,
-                OffsetXMin = -100,
-                OffsetYMax = 100,
-                OffsetYMin = -100,
+                MaximumNumberOfRecursionLevels = 50,
+                NumberOfFeatures = 500,
+                NumberOfThresholds = 50,
+                OffsetXMax = 25,
+                OffsetXMin = -25,
+                OffsetYMax = 25,
+                OffsetYMin = -25,
                 OutOfRangeValue = 1000000,
                 SplittingThresholdMax = .2f,
                 SufficientGainLevel = 0,
@@ -63,11 +63,11 @@ namespace DecisionTreeClassifier
         static void Test()
         {
             BinaryFormatter bf = new BinaryFormatter();
-            using (FileStream fs = File.OpenRead("c:/users/ben/desktop/serialized.dat"))
+            using (FileStream fs = File.OpenRead("c:/users/brush/desktop/serialized.dat"))
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = @"C:\Users\Ben\Desktop\Toms2\1.dat";
+                string file = @"C:\Users\brush\Desktop\Toms2\1.dat";
 
                 LabeledTomogram tom = DataReader.ReadDatFile(file);
 
