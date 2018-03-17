@@ -19,7 +19,7 @@ namespace DecisionTreeClassifier
         {
             Console.WriteLine("Loading shit..."); 
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            string[] files = Directory.GetFiles(@"c:/users/brush/desktop/toms2", "*.dat").Take(1).ToArray();
+            string[] files = Directory.GetFiles(@"/home/brush/toms", "*.dat").Take(20).ToArray();
             int i = 0; 
             foreach (string file in files)
             {
@@ -37,8 +37,8 @@ namespace DecisionTreeClassifier
             {
                 // TODO: Fill in
                 MaximumNumberOfRecursionLevels = 50,
-                NumberOfFeatures = 500,
-                NumberOfThresholds = 50,
+                NumberOfFeatures = 250,
+                NumberOfThresholds = 25,
                 OffsetXMax = 25,
                 OffsetXMin = -25,
                 OffsetYMax = 25,
@@ -63,11 +63,11 @@ namespace DecisionTreeClassifier
         static void Test()
         {
             BinaryFormatter bf = new BinaryFormatter();
-            using (FileStream fs = File.OpenRead("c:/users/brush/desktop/serialized.dat"))
+            using (FileStream fs = File.OpenRead("serialized.dat"))
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = @"C:\Users\brush\Desktop\Toms2\1.dat";
+                string file = @"/home/brush/0.dat";
 
                 LabeledTomogram tom = DataReader.ReadDatFile(file);
 
@@ -90,7 +90,7 @@ namespace DecisionTreeClassifier
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
 
                 Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
-                bmp.Save("labeled.bmp"); 
+                bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
 
                 //tom = Morphology.Open(new LabeledTomogram
                 //{
@@ -113,7 +113,7 @@ namespace DecisionTreeClassifier
         static void Main(string[] args)
         {
             Train();
-            //Test();
+            Test();
         }
     }
 }

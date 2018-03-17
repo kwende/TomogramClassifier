@@ -23,17 +23,21 @@ namespace DecisionTreeClassifier.DataIO
                 l.Height = tom.Height;
                 l.Labels = new float[l.Data.Length];
 
+		int m = 0; 
                 for (int c = 0; c < l.Labels.Length; c++)
                 {
                     if (tom.DataClasses[c] == -1)
                     {
                         l.Labels[c] = 1;
+			m++; 
                     }
                     else
                     {
                         l.Labels[c] = 0;
                     }
                 }
+
+		Console.WriteLine(m.ToString()); 
 
                 return l;
             }

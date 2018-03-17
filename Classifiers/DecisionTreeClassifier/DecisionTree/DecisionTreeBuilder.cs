@@ -169,6 +169,8 @@ namespace DecisionTreeClassifier.DecisionTree
             currentNode.IsLeaf = true;
             currentNode.Class = trainingPoints.GroupBy(n => n.Label).OrderByDescending(n => n.Count()).First().Key;
 
+	    //if(currentNode.Class == 1) System.Console.WriteLine("Node class 1 found"); 
+
             return;
         }
 
@@ -225,7 +227,7 @@ namespace DecisionTreeClassifier.DecisionTree
 
                     for (int p = 0; p < trainingPoints.Count; p++)
                     {
-                        if (random.NextDouble() < .1)
+                        if (random.NextDouble() < .1 || trainingPoints.Count < 1000)
                         {
                             LabeledPoint trainingPoint = trainingPoints[p];
 
@@ -244,7 +246,7 @@ namespace DecisionTreeClassifier.DecisionTree
                         }
                     }
 
-                    //double gain1 = ComputeGain(currentShannonEntropy, leftBucket1, rightBucket1); 
+                    //double gain = ComputeGain(currentShannonEntropy, leftBucket1, rightBucket1); 
                     double gain = ComputeGain(currentShannonEntropy, leftBucket, rightBucket);
 
                     lock (typeof(DecisionTreeBuilder))
@@ -283,8 +285,11 @@ namespace DecisionTreeClassifier.DecisionTree
                     currentNode.RightBranch = new DecisionTreeNode();
                     currentNode.IsLeaf = false;
 
-                    splittingQuestions =
-                        GenerateSplittingQuestions(random, options);
+		    //System.Console.WriteLine("left: " + bestLeftBucket.Count.ToString()); 
+		    //System.Console.WriteLine("right: " + bestRightBucket.Count.ToString()); 
+
+                    //splittingQuestions =
+                    //    GenerateSplittingQuestions(random, options);
 
                     RecurseAndPartition(bestLeftBucket, splittingQuestions,
                         currentRecursionLevel + 1, options, currentNode.LeftBranch, random);
