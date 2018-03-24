@@ -40,10 +40,11 @@ namespace Tester
             //EdgeTracer.DoIt(); 
             //LabeledEdgeFinder.DoIt(); 
 
-            const string TomogramDirectory = @"D:\tomograms";
+            const string TomogramDirectory = @"c:/users/ben/downloads/";
 
             Console.WriteLine("Loading main file..");
             MRCFile file = MRCParser.Parse(Path.Combine(TomogramDirectory, "tomography2_fullsirtcliptrim.mrc"));
+
 
             float scaler = 255 / (file.MaxPixelValue - file.MinPixelValue);
 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace TomogramImageSimulator
 {
-    public static class TomogramBuilder
+    public static class VoronoiTomogramBuilder
     {
         public static void SaveAsDatFile(Tomogram tomogram, string path)
         {

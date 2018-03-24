@@ -67,9 +67,7 @@ namespace DecisionTreeClassifier
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = @"C:\Users\Ben\Desktop\Toms2\1.dat";
-
-                LabeledTomogram tom = DataReader.ReadDatFile(file);
+                LabeledTomogram tom = DataReader.ReadMRCFile("c:/users/ben/downloads/tomography2_fullsirtcliptrim.mrc", 150); 
 
                 DecisionTreeOptions options = new DecisionTreeOptions
                 {
@@ -90,7 +88,7 @@ namespace DecisionTreeClassifier
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
 
                 Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
-                bmp.Save("labeled.bmp"); 
+                bmp.Save("c:/users/ben/desktop/labeled.png", ImageFormat.Png); 
 
                 //tom = Morphology.Open(new LabeledTomogram
                 //{
@@ -112,8 +110,8 @@ namespace DecisionTreeClassifier
 
         static void Main(string[] args)
         {
-            Train();
-            //Test();
+            //Train();
+            Test();
         }
     }
 }

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ComputerVision\ComputerVision.csproj" />
     <ProjectReference Include="..\DataStructures\DataStructures.csproj" />
+    <ProjectReference Include="..\MRCSharpLib\MRCSharpLib.csproj" />
   </ItemGroup>
 
 </Project>

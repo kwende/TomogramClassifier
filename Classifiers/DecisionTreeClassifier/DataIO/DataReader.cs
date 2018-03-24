@@ -1,5 +1,6 @@
 ﻿using DataStructures;
 using DecisionTreeClassifier.DataStructures;
+using MRCSharpLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,6 +38,20 @@ namespace DecisionTreeClassifier.DataIO
 
                 return l;
             }
+        }
+
+        public static LabeledTomogram ReadMRCFile(string mrcFilePath, int frameNumber)
+        {
+            MRCFile file = MRCParser.Parse(mrcFilePath);
+            MRCFrame frame = file.Frames[frameNumber];
+
+            LabeledTomogram ret = new LabeledTomogram();
+            ret.Labels = null;
+            ret.Data = frame.Data;
+            ret.Width = frame.Width;
+            ret.Height = frame.Height;
+
+            return ret; 
         }
 
         public static LabeledTomogram ReadTomogramPair(string dataFile, string labelFile, int width, int height)
