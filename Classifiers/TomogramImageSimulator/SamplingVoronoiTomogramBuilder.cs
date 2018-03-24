@@ -66,7 +66,7 @@ namespace TomogramImageSimulator
         }
 
         public static Tomogram BuildTomogram(int width, int height,
-            int backgroundDensity, int vesicleCount, string templateTomogramMRC, Random rand)
+            int backgroundDensity, int vesicleCount, MRCFile file, Random rand)
         {
 
             Tomogram ret = new Tomogram();
@@ -83,14 +83,14 @@ namespace TomogramImageSimulator
             BuildBackground(ret);
             AddVesicles(ret);
 
-            FinalizeFrame(ret, rand, templateTomogramMRC);
+            FinalizeFrame(ret, rand, file);
 
             return ret;
         }
 
-        private static void FinalizeFrame(Tomogram tom, Random rand, string templateTomogramMRC)
+        private static void FinalizeFrame(Tomogram tom, Random rand, MRCFile file)
         {
-            MRCFile file = MRCParser.Parse(templateTomogramMRC);
+            
             float minValue = file.MinPixelValue;
             float maxValue = file.MaxPixelValue;
 
