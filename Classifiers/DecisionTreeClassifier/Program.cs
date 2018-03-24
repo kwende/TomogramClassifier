@@ -19,7 +19,7 @@ namespace DecisionTreeClassifier
         {
             Console.WriteLine("Loading shit..."); 
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            string[] files = Directory.GetFiles(@".", "*.dat").Take(5).ToArray();
+            string[] files = Directory.GetFiles(@"/home/brush/toms", "*.dat").Take(20).ToArray();
             int i = 0; 
             foreach (string file in files)
             {
@@ -36,13 +36,13 @@ namespace DecisionTreeClassifier
             DecisionTreeOptions options = new DecisionTreeOptions
             {
                 // TODO: Fill in
-                MaximumNumberOfRecursionLevels = 20,
+                MaximumNumberOfRecursionLevels = 50,
                 NumberOfFeatures = 250,
                 NumberOfThresholds = 25,
-                OffsetXMax = 100,
-                OffsetXMin = -100,
-                OffsetYMax = 100,
-                OffsetYMin = -100,
+                OffsetXMax = 25,
+                OffsetXMin = -25,
+                OffsetYMax = 25,
+                OffsetYMin = -25,
                 OutOfRangeValue = 1000000,
                 SplittingThresholdMax = .2f,
                 SufficientGainLevel = 0,
@@ -63,11 +63,11 @@ namespace DecisionTreeClassifier
         static void Test()
         {
             BinaryFormatter bf = new BinaryFormatter();
-            using (FileStream fs = File.OpenRead("c:/users/ben/desktop/serialized.dat"))
+            using (FileStream fs = File.OpenRead("serialized.dat"))
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                LabeledTomogram tom = DataReader.ReadMRCFile("c:/users/ben/downloads/tomography2_fullsirtcliptrim.mrc", 150); 
+                string file = @"/home/brush/0.dat";
 
                 DecisionTreeOptions options = new DecisionTreeOptions
                 {
@@ -88,7 +88,7 @@ namespace DecisionTreeClassifier
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
 
                 Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
-                bmp.Save("c:/users/ben/desktop/labeled.png", ImageFormat.Png); 
+                bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
 
                 //tom = Morphology.Open(new LabeledTomogram
                 //{
@@ -110,7 +110,7 @@ namespace DecisionTreeClassifier
 
         static void Main(string[] args)
         {
-            //Train();
+            Train();
             Test();
         }
     }
