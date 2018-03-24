@@ -85,10 +85,10 @@ namespace DecisionTreeClassifier
                     PercentageOfPixelsToUse = .1f
                 };
 
-                float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
+                //float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
 
-                Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
-                bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
+                //Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
+                //bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
 
                 //tom = Morphology.Open(new LabeledTomogram
                 //{

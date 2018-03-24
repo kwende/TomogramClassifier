@@ -1,5 +1,6 @@
 ﻿using DataStructures;
 using Maths;
+using MRCSharpLib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace TomogramImageSimulator
 {
-    public static class VoronoiDiagramBuilder
+    public static class SamplingVoronoiDiagramBuilder
     {
         public static void SaveAsDatFile(Tomogram tomogram, string path)
         {
@@ -24,13 +25,22 @@ namespace TomogramImageSimulator
 
         public static void SaveAsBitmap(Tomogram tomogram, string path)
         {
+            //Color[] colors = new Color[tomogram.BackgroundDensity];
+
+            //for (int c = 0; c < colors.Length; c++)
+            //{
+            //    byte b = (byte)RandomNormal.Next(tomogram.Random, 85, 15);
+            //    colors[c] = Color.FromArgb(b, b, b);
+            //}
+
             using (Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height))
             {
                 for (int y = 0, i = 0; y < bmp.Height; y++)
                 {
                     for (int x = 0; x < bmp.Width; x++, i++)
                     {
-                        byte value = (byte)(tomogram.Data[i] * (1 / tomogram.MRCScaler));
+                        byte value = (byte)((tomogram.Data[i] + 
+                            System.Math.Abs(tomogram.MinimumTomogramValue)) * tomogram.MRCScaler);
                         if (value > 0)
                         {
                             bmp.SetPixel(x, y, Color.FromArgb(value, value, value));
@@ -38,42 +48,62 @@ namespace TomogramImageSimulator
                     }
                 }
 
+                //for (int y = 0, i = 0; y < bmp.Height; y++)
+                //{
+                //    for (int x = 0; x < bmp.Width; x++, i++)
+                //    {
+                //        int colorIndex = tomogram.Data[i];
+                //        if (colorIndex == 0)
+                //        {
+                //            byte b = (byte)tomogram.Random.Next(50, 60);
+                //            bmp.SetPixel(x, y, Color.FromArgb(b, b, b));
+                //        }
+                //    }
+                //}
+
                 bmp.Save(path);
             }
         }
 
         public static Tomogram BuildTomogram(int width, int height,
-            int backgroundDensity, int vesicleCount)
+            int backgroundDensity, int vesicleCount, string templateTomogramMRC, Random rand)
         {
+
             Tomogram ret = new Tomogram();
             ret.Width = width;
             ret.Height = height;
             ret.BackgroundDensity = backgroundDensity;
             ret.VesicleCount = vesicleCount;
             ret.Random = new Random();
-            ret.MinimumVesicleRadius = 20;
+            ret.MinimumVesicleRadius = 10;
             ret.MaximumVesicleRadius = 20;
-            ret.MRCScaler = 0.00565638626f;
             ret.Data = new float[width * height];
             ret.DataClasses = new int[width * height];
 
             BuildBackground(ret);
-            //AddVesicles(ret);
+            AddVesicles(ret);
 
-            FinalizeFrame(ret);
+            FinalizeFrame(ret, rand, templateTomogramMRC);
 
             return ret;
         }
 
-        private static void FinalizeFrame(Tomogram tom)
+        private static void FinalizeFrame(Tomogram tom, Random rand, string templateTomogramMRC)
         {
+            MRCFile file = MRCParser.Parse(templateTomogramMRC);
+            float minValue = file.MinPixelValue;
+            float maxValue = file.MaxPixelValue;
+
+            tom.MRCScaler = 255.0f / (maxValue - minValue);
+            tom.MinimumTomogramValue = minValue; 
+
             int numberOfBackgroundClasses = tom.DataClasses.Where(n => n != 0).Count();
 
             float[] classKey = new float[numberOfBackgroundClasses];
             for (int c = 0; c < classKey.Length; c++)
             {
-                float v = (float)RandomNormal.Next(tom.Random, 85, 15);
-                classKey[c] = v * tom.MRCScaler;
+                MRCFrame frame = file.Frames[rand.Next(0, file.Frames.Count-1)]; 
+                classKey[c] = frame.Data[rand.Next(0, frame.Data.Length-1)];
             }
 
             for (int y = 0, i = 0; y < tom.Height; y++)
@@ -98,13 +128,13 @@ namespace TomogramImageSimulator
                     int classNumber = tom.DataClasses[i];
                     if (classNumber == -1)
                     {
-                        float v = tom.Random.Next(50, 60);
-                        tom.Data[i] = v * tom.MRCScaler;
+                        float v = tom.Random.Next(0, 5);
+                        tom.Data[i] = v * (1/tom.MRCScaler);
                     }
                 }
             }
 
-            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
+            //tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
         }
 
         private static void AddVesicles(Tomogram tom)
@@ -160,7 +190,7 @@ namespace TomogramImageSimulator
                             (centerY - y) * (centerY - y) + (centerX - x) * (centerX - x));
 
                         if (distance <= vesicle.Radius
-                            && distance >= vesicle.Radius - tom.Random.Next(1, 3)
+                            && distance >= vesicle.Radius - tom.Random.Next(2,5)
                             && y >= 0 && x >= 0 &&
                             y < tom.Height && x < tom.Width)
                         {
@@ -173,11 +203,10 @@ namespace TomogramImageSimulator
 
         private static void BuildBackground(Tomogram tom)
         {
-
             Dictionary<int, List<int>> lookup = new Dictionary<int, List<int>>();
 
-            // initialize by smattering the first ten percent. 
-            for (int p = 1; p <= tom.BackgroundDensity * .1; p++)
+            // initialize by smattering the first ten percent.
+            for (int p = 1; p <= tom.BackgroundDensity; p++)
             {
                 int x = tom.Random.Next(0, tom.Width);
                 int y = tom.Random.Next(0, tom.Height);

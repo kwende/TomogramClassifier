@@ -48,8 +48,6 @@ namespace Tester
 
             float scaler = 255 / (file.MaxPixelValue - file.MinPixelValue);
 
-            return; 
-
             //Console.WriteLine("Loading label files...");
             //List<MRCFile> labelFiles = new List<MRCFile>();
             //labelFiles.Add(MRCParser.Parse(Path.Combine(TomogramDirectory, "tomography2_fullsirtcliptrim.labels.mrc")));
@@ -66,65 +64,65 @@ namespace Tester
 
             //
 
-            //float skipLength = 4.0f;
+            float skipLength = 1.0f;
 
             //int vertexCount = 0;
             //using (StreamWriter sw = new StreamWriter(Path.Combine(TomogramDirectory, "pointCloudEnding.ply")))
             //{
-            //    for (int z = 0; z < file.Frames.Count; z++)
-            //    {
-            //        Console.WriteLine($"File {z}/{file.Frames.Count}");
-            //        MRCFrame frame = file.Frames[z];
-            //        using (Bitmap bmp = new Bitmap(frame.Width / (int)skipLength, frame.Height / (int)skipLength))
-            //        {
-            //            for (int y = 0; y < frame.Height; y += (int)skipLength)
-            //            {
-            //                for (int x = 0; x < frame.Width; x += (int)skipLength)
-            //                {
-            //                    try
-            //                    {
-            //                        int i = y * frame.Width + x;
+            for (int z = 0; z < file.Frames.Count; z++)
+            {
+                Console.WriteLine($"File {z}/{file.Frames.Count}");
+                MRCFrame frame = file.Frames[z];
+                using (Bitmap bmp = new Bitmap(frame.Width / (int)skipLength, frame.Height / (int)skipLength))
+                {
+                    for (int y = 0; y < frame.Height; y += (int)skipLength)
+                    {
+                        for (int x = 0; x < frame.Width; x += (int)skipLength)
+                        {
+                            try
+                            {
+                                int i = y * frame.Width + x;
 
-            //                        bool labeled = false;
-            //                        int colorIndex = 0;
-            //                        foreach (MRCFile label in labelFiles)
-            //                        {
-            //                            if (label.Frames[z].Data[i] > 0)
-            //                            {
-            //                                byte b = (byte)(frame.Data[i] * scaler);
-            //                                bmp.SetPixel((int)(x / skipLength), (int)(y / skipLength), colors[colorIndex]);
-            //                                sw.WriteLine("{0} {1} {2} {3} {4} {5}",
-            //                                    x / skipLength,
-            //                                    y / skipLength,
-            //                                    z / skipLength,
-            //                                    colors[colorIndex].R, colors[colorIndex].G, colors[colorIndex].B);
-            //                                //vertices.Add(new PLYVertex { X = x, Y = y, Z = z, Color = colors[colorIndex] });
-            //                                labeled = true;
-            //                                vertexCount++;
-            //                            }
+                                bool labeled = false;
+                                int colorIndex = 0;
+                                //foreach (MRCFile label in labelFiles)
+                                //{
+                                //    if (label.Frames[z].Data[i] > 0)
+                                //    {
+                                //        byte b = (byte)(frame.Data[i] * scaler);
+                                //        bmp.SetPixel((int)(x / skipLength), (int)(y / skipLength), colors[colorIndex]);
+                                //        sw.WriteLine("{0} {1} {2} {3} {4} {5}",
+                                //            x / skipLength,
+                                //            y / skipLength,
+                                //            z / skipLength,
+                                //            colors[colorIndex].R, colors[colorIndex].G, colors[colorIndex].B);
+                                //        //vertices.Add(new PLYVertex { X = x, Y = y, Z = z, Color = colors[colorIndex] });
+                                //        labeled = true;
+                                //        vertexCount++;
+                                //    }
 
-            //                            colorIndex++;
-            //                        }
+                                //    colorIndex++;
+                                //}
 
-            //                        if (!labeled)
-            //                        {
-            //                            float v = frame.Data[i] + Math.Abs(file.MinPixelValue);
-            //                            byte b = (byte)(v * scaler);
-            //                            bmp.SetPixel((int)(x / skipLength), (int)(y / skipLength), Color.FromArgb(b, b, b));
-            //                            //vertices.Add(new PLYVertex { X = x, Y = y, Z = z, Color = Color.FromArgb(b, b, b) });
-            //                        }
-            //                    }
-            //                    catch
-            //                    {
-            //                        //sw.WriteLine("{0} {1} {2} {3} {4} {5}", x, y, z, 0, 0, 0);
-            //                        //vertexCount++;
-            //                        //vertices.Add(new PLYVertex { X = x, Y = y, Z = z, Color = Color.FromArgb(0, 0, 0) });
-            //                    }
-            //                }
-            //            }
-            //            bmp.Save(Path.Combine(TomogramDirectory, $"{z}.png"), ImageFormat.Png);
-            //        }
-            //    }
+                                //if (!labeled)
+                                {
+                                    float v = frame.Data[i] + Math.Abs(file.MinPixelValue);
+                                    byte b = (byte)(v * scaler);
+                                    bmp.SetPixel((int)(x / skipLength), (int)(y / skipLength), Color.FromArgb(b, b, b));
+                                    //vertices.Add(new PLYVertex { X = x, Y = y, Z = z, Color = Color.FromArgb(b, b, b) });
+                                }
+                            }
+                            catch
+                            {
+                                //sw.WriteLine("{0} {1} {2} {3} {4} {5}", x, y, z, 0, 0, 0);
+                                //vertexCount++;
+                                //vertices.Add(new PLYVertex { X = x, Y = y, Z = z, Color = Color.FromArgb(0, 0, 0) });
+                            }
+                        }
+                    }
+                    bmp.Save(Path.Combine("C:/users/ben/desktop/samples/", $"{z}.png"), ImageFormat.Png);
+                }
+            }
             //}
 
             //using (StreamWriter sw = new StreamWriter(Path.Combine(TomogramDirectory, "pointCloud.ply")))
