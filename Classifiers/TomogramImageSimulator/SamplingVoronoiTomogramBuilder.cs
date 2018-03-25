@@ -39,7 +39,7 @@ namespace TomogramImageSimulator
                 {
                     for (int x = 0; x < bmp.Width; x++, i++)
                     {
-                        byte value = (byte)((tomogram.Data[i] + 
+                        byte value = (byte)((tomogram.Data[i] +
                             System.Math.Abs(tomogram.MinimumTomogramValue)) * tomogram.MRCScaler);
                         if (value > 0)
                         {
@@ -83,27 +83,27 @@ namespace TomogramImageSimulator
             BuildBackground(ret);
             AddVesicles(ret);
 
-            FinalizeFrame(ret, rand, file);
+            FinalizeFrame(ret, rand, file, "distribution.dat");
 
             return ret;
         }
 
-        private static void FinalizeFrame(Tomogram tom, Random rand, MRCFile file)
+        private static void FinalizeFrame(Tomogram tom, Random rand, MRCFile file, string serializedSamplerPath)
         {
-            
+
             float minValue = file.MinPixelValue;
             float maxValue = file.MaxPixelValue;
 
             tom.MRCScaler = 255.0f / (maxValue - minValue);
-            tom.MinimumTomogramValue = minValue; 
+            tom.MinimumTomogramValue = minValue;
 
             int numberOfBackgroundClasses = tom.DataClasses.Where(n => n != 0).Count();
 
             float[] classKey = new float[numberOfBackgroundClasses];
             for (int c = 0; c < classKey.Length; c++)
             {
-                MRCFrame frame = file.Frames[rand.Next(0, file.Frames.Count-1)]; 
-                classKey[c] = frame.Data[rand.Next(0, frame.Data.Length-1)];
+                MRCFrame frame = file.Frames[rand.Next(0, file.Frames.Count - 1)];
+                classKey[c] = frame.Data[rand.Next(0, frame.Data.Length - 1)];
             }
 
             for (int y = 0, i = 0; y < tom.Height; y++)
@@ -121,6 +121,13 @@ namespace TomogramImageSimulator
             GaussianBlur blur = GaussianBlur.BuildBlur(2.0f, 4);
             tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
 
+            List<float> distribution = null; 
+            BinaryFormatter bf = new BinaryFormatter();
+            using (FileStream fin = File.OpenRead(serializedSamplerPath))
+            {
+                distribution = bf.Deserialize(fin) as List<float>; 
+            }
+
             for (int y = 0, i = 0; y < tom.Height; y++)
             {
                 for (int x = 0; x < tom.Width; x++, i++)
@@ -128,8 +135,7 @@ namespace TomogramImageSimulator
                     int classNumber = tom.DataClasses[i];
                     if (classNumber == -1)
                     {
-                        float v = tom.Random.Next(0, 5);
-                        tom.Data[i] = v * (1/tom.MRCScaler);
+                        tom.Data[i] = distribution[rand.Next(0, distribution.Count - 1)]; 
                     }
                 }
             }
@@ -190,7 +196,7 @@ namespace TomogramImageSimulator
                             (centerY - y) * (centerY - y) + (centerX - x) * (centerX - x));
 
                         if (distance <= vesicle.Radius
-                            && distance >= vesicle.Radius - tom.Random.Next(2,5)
+                            && distance >= vesicle.Radius - tom.Random.Next(2, 5)
                             && y >= 0 && x >= 0 &&
                             y < tom.Height && x < tom.Width)
                         {

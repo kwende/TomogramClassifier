@@ -22,4 +22,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="distribution.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
