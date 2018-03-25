@@ -22,7 +22,7 @@ namespace TomogramImageSimulator
             //BinaryFormatter bf = new BinaryFormatter();
             //using (FileStream fs = File.Create("C:/users/ben/desktop/distribution.dat"))
             //{
-            //    bf.Serialize(fs, ret); 
+            //    bf.Serialize(fs, ret);
             //}
 
             //return;
@@ -47,7 +47,6 @@ namespace TomogramImageSimulator
             //File.WriteAllText("C:/users/ben/desktop/mask.py", toWrite);
 
             int counter = 0;
-            //for (int c = 0; c < 1000; c++)
             MRCFile file = MRCParser.Parse(@"/home/brush/tomography2_fullsirtcliptrim.mrc");
             Parallel.For(0, 40, c =>
             {
