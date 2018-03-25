@@ -47,8 +47,9 @@ namespace TomogramImageSimulator
             //File.WriteAllText("C:/users/ben/desktop/mask.py", toWrite);
 
             int counter = 0;
-            MRCFile file = MRCParser.Parse(@"/home/brush/tomography2_fullsirtcliptrim.mrc");
+            MRCFile file = MRCParser.Parse(@"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc");
             Parallel.For(0, 40, c =>
+            //int c = 0; 
             {
                 Random rand = new Random(c);
 
@@ -61,8 +62,8 @@ namespace TomogramImageSimulator
 
                 Tomogram tom = SamplingVoronoiDiagramBuilder.BuildTomogram(860, 934, 100000,
                     rand.Next(15, 40), file, rand);
-                SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"/home/brush/tom3/{c}.bmp");
-                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"/home/brush/tom3/{c}.dat");
+                SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"c:/users/ben/desktop/tom3/{c}.bmp");
+                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"c:/users/ben/desktop/tom3/{c}.dat");
             });
         }
     }

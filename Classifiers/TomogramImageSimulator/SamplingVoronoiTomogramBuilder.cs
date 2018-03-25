@@ -88,7 +88,8 @@ namespace TomogramImageSimulator
             return ret;
         }
 
-        private static void FinalizeFrame(Tomogram tom, Random rand, MRCFile file, string serializedSamplerPath)
+        private static void FinalizeFrame(Tomogram tom, Random rand, MRCFile file, 
+            string serializedSamplerPath)
         {
 
             float minValue = file.MinPixelValue;
@@ -118,15 +119,20 @@ namespace TomogramImageSimulator
                 }
             }
 
-            GaussianBlur blur = GaussianBlur.BuildBlur(2.0f, 4);
+            GaussianBlur blur = GaussianBlur.BuildBlur(1.0f, 4);
             tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
 
-            List<float> distribution = null; 
-            BinaryFormatter bf = new BinaryFormatter();
-            using (FileStream fin = File.OpenRead(serializedSamplerPath))
-            {
-                distribution = bf.Deserialize(fin) as List<float>; 
-            }
+            //List<float> distribution = null; 
+            //BinaryFormatter bf = new BinaryFormatter();
+            //using (FileStream fin = File.OpenRead(serializedSamplerPath))
+            //{
+            //    distribution = bf.Deserialize(fin) as List<float>; 
+            //}
+
+            List<float> distribution = AnnotatedTomogramSampler.Sample(
+                @"C:\Users\Ben\Desktop\tomograms\145_painted.png",
+                @"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc",
+                145);
 
             for (int y = 0, i = 0; y < tom.Height; y++)
             {
@@ -139,8 +145,7 @@ namespace TomogramImageSimulator
                     }
                 }
             }
-
-            //tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
+            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
         }
 
         private static void AddVesicles(Tomogram tom)
