@@ -36,7 +36,7 @@ namespace DecisionTreeClassifier
             DecisionTreeOptions options = new DecisionTreeOptions
             {
                 // TODO: Fill in
-                MaximumNumberOfRecursionLevels = 50,
+                MaximumNumberOfRecursionLevels = 25,
                 NumberOfFeatures = 250,
                 NumberOfThresholds = 25,
                 OffsetXMax = 25,
