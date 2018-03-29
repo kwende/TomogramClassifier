@@ -82,7 +82,15 @@ namespace DecisionTreeClassifier.DecisionTree
             else
             {
                 uVal = point.SourceTomogram.Data[u];
+                if(Math.Abs(zVal - uVal) > options.DistanceThreshold)
+                {
+                    uVal = options.OutOfRangeValue; 
+                }
                 vVal = point.SourceTomogram.Data[v];
+                if(Math.Abs(zVal - vVal) > options.DistanceThreshold)
+                {
+                    vVal = options.OutOfRangeValue; 
+                }
             }
 
             if ((uVal - vVal) < question.Threshold)

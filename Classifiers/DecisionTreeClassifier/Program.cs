@@ -17,21 +17,21 @@ namespace DecisionTreeClassifier
     {
         static void Train()
         {
-            Console.WriteLine("Loading shit..."); 
+            Console.WriteLine("Loading shit...");
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
             string[] files = Directory.GetFiles(@"/home/brush/toms", "*.dat").Take(20).ToArray();
-            int i = 0; 
+            int i = 0;
             foreach (string file in files)
             {
                 Console.WriteLine($"{i + 1}/{files.Length}");
-                i++; 
+                i++;
                 //string dataFile = $"C:/Users/brush/Desktop/DataSets/data/{c}.bin";
                 //string labelFile = $"C:/Users/brush/Desktop/DataSets/labels/{c}.bin";
 
                 LabeledTomogram tom = DataReader.ReadDatFile(file);
                 tomograms.AddRange(DataManipulator.FlipAndRotateTomogram(tom));
             }
-            Console.WriteLine("...shit loaded."); 
+            Console.WriteLine("...shit loaded.");
 
             DecisionTreeOptions options = new DecisionTreeOptions
             {
@@ -46,7 +46,8 @@ namespace DecisionTreeClassifier
                 OutOfRangeValue = 1000000,
                 SplittingThresholdMax = .2f,
                 SufficientGainLevel = 0,
-                PercentageOfPixelsToUse = .1f
+                PercentageOfPixelsToUse = .05f,
+                DistanceThreshold = .1f,
             };
 
             DecisionTreeNode node = DecisionTreeBuilder.Train(tomograms, new Random(1234), options);

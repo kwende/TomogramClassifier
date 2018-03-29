@@ -17,5 +17,6 @@ namespace DecisionTreeClassifier.DataStructures
         public int OutOfRangeValue { get; set; }
         public double SufficientGainLevel { get; set; }
         public float PercentageOfPixelsToUse { get; set; }
+        public float DistanceThreshold { get; set; }
     }
 }

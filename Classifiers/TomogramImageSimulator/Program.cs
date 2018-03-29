@@ -14,6 +14,13 @@ namespace TomogramImageSimulator
     {
         static void Main(string[] args)
         {
+            //List<float> distribution = AnnotatedTomogramSampler.Sample(
+            //    @"C:\Users\Ben\Desktop\145_painted.png",
+            //    @"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc",
+            //    145);
+
+            //return; 
+
             //List<float> ret = AnnotatedTomogramSampler.Sample(
             //    @"C:\Users\Ben\Desktop\tomograms\145_painted.png",
             //    @"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc",
