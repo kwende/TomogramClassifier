@@ -98,13 +98,14 @@ namespace TomogramImageSimulator
             tom.MRCScaler = 255.0f / (maxValue - minValue);
             tom.MinimumTomogramValue = minValue;
 
-            int numberOfBackgroundClasses = tom.DataClasses.Where(n => n != 0).Count();
+            int[] classes = tom.DataClasses.Where(n => n != -1).Distinct().ToArray();
 
-            float[] classKey = new float[numberOfBackgroundClasses];
-            for (int c = 0; c < classKey.Length; c++)
+            Dictionary<int, float> classValues = new Dictionary<int, float>(); 
+            for (int c = 0; c < classes.Length; c++)
             {
-                MRCFrame frame = file.Frames[rand.Next(0, file.Frames.Count - 1)];
-                classKey[c] = frame.Data[rand.Next(0, frame.Data.Length - 1)];
+                MRCFrame frame = file.Frames[145];// rand.Next(0, file.Frames.Count - 1)];
+                float value = frame.Data[rand.Next(0, frame.Data.Length - 1)];
+                classValues.Add(classes[c], value); 
             }
 
             for (int y = 0, i = 0; y < tom.Height; y++)
@@ -112,27 +113,22 @@ namespace TomogramImageSimulator
                 for (int x = 0; x < tom.Width; x++, i++)
                 {
                     int classNumber = tom.DataClasses[i];
-                    if (classNumber > 0 && classNumber <= tom.BackgroundDensity)
+                    if (classNumber >= 0)
                     {
-                        tom.Data[i] = classKey[classNumber];
+                        tom.Data[i] = classValues[classNumber];
                     }
                 }
             }
 
-            GaussianBlur blur = GaussianBlur.BuildBlur(1.0f, 4);
+            GaussianBlur blur = GaussianBlur.BuildBlur(.5f, 2);
             tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
 
-            //List<float> distribution = null; 
-            //BinaryFormatter bf = new BinaryFormatter();
-            //using (FileStream fin = File.OpenRead(serializedSamplerPath))
-            //{
-            //    distribution = bf.Deserialize(fin) as List<float>; 
-            //}
-
-            List<float> distribution = AnnotatedTomogramSampler.Sample(
-                @"C:\Users\Ben\Desktop\tomograms\145_painted.png",
-                @"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc",
-                145);
+            List<float> distribution = null;
+            BinaryFormatter bf = new BinaryFormatter();
+            using (FileStream fin = File.OpenRead(serializedSamplerPath))
+            {
+                distribution = bf.Deserialize(fin) as List<float>;
+            }
 
             for (int y = 0, i = 0; y < tom.Height; y++)
             {

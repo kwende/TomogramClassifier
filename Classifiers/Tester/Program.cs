@@ -43,7 +43,7 @@ namespace Tester
             const string TomogramDirectory = @"c:/users/ben/downloads/";
 
             Console.WriteLine("Loading main file..");
-            MRCFile file = MRCParser.Parse(Path.Combine(TomogramDirectory, "tomography2_fullsirtcliptrim.mrc"));
+            MRCFile file = MRCParser.Parse(@"E:\Downloads\tomography2_fullsirtcliptrim.mrc");
 
 
             float scaler = 255 / (file.MaxPixelValue - file.MinPixelValue);
