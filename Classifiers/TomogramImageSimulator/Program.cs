@@ -55,8 +55,8 @@ namespace TomogramImageSimulator
 
             int counter = 0;
             MRCFile file = MRCParser.Parse(@"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc");
-            Parallel.For(0, 40, c =>
-            //int c = 0; 
+            //Parallel.For(0, 40, c =>
+            int c = 0; 
             {
                 Random rand = new Random(c);
 
@@ -67,11 +67,11 @@ namespace TomogramImageSimulator
                     Console.WriteLine(counter.ToString());
                 }
 
-                Tomogram tom = SamplingVoronoiDiagramBuilder.BuildTomogram(860, 934, 100000,
-                    rand.Next(15, 40), file, rand);
-                SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"c:/users/ben/desktop/tom3/{c}.bmp");
-                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"c:/users/ben/desktop/tom3/{c}.dat");
-            });
+                Tomogram tom = SamplingVoronoiDiagramBuilder.BuildTomogram(100, 100, 10000,
+                    rand.Next(4, 8), file, rand);
+                SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"c:/users/ben/desktop/shrunken/{c}.bmp");
+                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"c:/users/ben/desktop/shrunken/{c}.dat");
+            }//);
         }
     }
 }

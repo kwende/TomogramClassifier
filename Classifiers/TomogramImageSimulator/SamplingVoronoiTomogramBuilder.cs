@@ -98,7 +98,7 @@ namespace TomogramImageSimulator
             tom.MRCScaler = 255.0f / (maxValue - minValue);
             tom.MinimumTomogramValue = minValue;
 
-            int numberOfBackgroundClasses = tom.DataClasses.Where(n => n != 0).Count();
+            int numberOfBackgroundClasses = tom.BackgroundDensity; 
 
             float[] classKey = new float[numberOfBackgroundClasses];
             for (int c = 0; c < classKey.Length; c++)
@@ -216,8 +216,8 @@ namespace TomogramImageSimulator
         {
             Dictionary<int, List<int>> lookup = new Dictionary<int, List<int>>();
 
-            // initialize by smattering the first ten percent.
-            for (int p = 1; p <= tom.BackgroundDensity; p++)
+            // randomly intersperse the background classes. 
+            for (int p = 0; p < tom.BackgroundDensity; p++)
             {
                 int x = tom.Random.Next(0, tom.Width);
                 int y = tom.Random.Next(0, tom.Height);
@@ -229,7 +229,7 @@ namespace TomogramImageSimulator
                 lookup.Add(p, list);
             }
 
-            // fill out
+            // inflate all the background classes. 
             for (; ; )
             {
                 for (int p = 1; p <= tom.BackgroundDensity; p++)

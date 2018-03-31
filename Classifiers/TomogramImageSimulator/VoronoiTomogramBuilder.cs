@@ -58,7 +58,7 @@ namespace TomogramImageSimulator
             ret.DataClasses = new int[width * height];
 
             BuildBackground(ret);
-            //AddVesicles(ret);
+            AddVesicles(ret);
 
             FinalizeFrame(ret);
 

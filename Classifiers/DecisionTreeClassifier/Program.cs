@@ -10,6 +10,7 @@ using System.Linq;
 using System.Drawing.Imaging;
 using DataStructures;
 using ComputerVision;
+using MRCSharpLib;
 
 namespace DecisionTreeClassifier
 {
@@ -68,8 +69,6 @@ namespace DecisionTreeClassifier
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
-                string file = @"/home/brush/0.dat";
-
                 DecisionTreeOptions options = new DecisionTreeOptions
                 {
                     // TODO: Fill in
@@ -86,10 +85,27 @@ namespace DecisionTreeClassifier
                     PercentageOfPixelsToUse = .1f
                 };
 
-                //float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
+                LabeledTomogram tom = new LabeledTomogram();
+                tom.Width = 100;
+                tom.Height = 100;
+                tom.Data = new float[100 * 100];
 
-                //Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
-                //bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
+                MRCFile file = MRCParser.Parse(Path.Combine("/home/brush/tomography2_fullsirtcliptrim.mrc"));
+
+                MRCFrame frame = file.Frames[145];
+
+                for (int y = 264, i = 0; y < 363; y++)
+                {
+                    for (int x = 501; x < 600; x++, i++)
+                    {
+                        tom.Data[i] = frame.Data[y * 100 + x];
+                    }
+                }
+
+                float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
+
+                Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
+                bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
 
                 //tom = Morphology.Open(new LabeledTomogram
                 //{

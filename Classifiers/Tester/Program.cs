@@ -45,6 +45,16 @@ namespace Tester
             Console.WriteLine("Loading main file..");
             MRCFile file = MRCParser.Parse(Path.Combine(TomogramDirectory, "tomography2_fullsirtcliptrim.mrc"));
 
+            //MRCFrame frame = file.Frames[145];
+
+            //float[] data = 
+            //for (int y = 264; y < 363; y++)
+            //{
+            //    for (int x = 501; x < 600; x++)
+            //    {
+
+            //    }
+            //}
 
             float scaler = 255 / (file.MaxPixelValue - file.MinPixelValue);
 
