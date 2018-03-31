@@ -21,18 +21,18 @@ namespace TomogramImageSimulator
 
             //return; 
 
-            //List<float> ret = AnnotatedTomogramSampler.Sample(
-            //    @"C:\Users\Ben\Desktop\tomograms\145_painted.png",
-            //    @"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc",
-            //    145);
+    //        List<float> ret = AnnotatedTomogramSampler.Sample(
+    //@"C:\Users\ben\Desktop\samples\145_painted.png",
+    //@"E:\Downloads\tomography2_fullsirtcliptrim.mrc",
+    //145);
 
-            //BinaryFormatter bf = new BinaryFormatter();
-            //using (FileStream fs = File.Create("C:/users/ben/desktop/distribution.dat"))
-            //{
-            //    bf.Serialize(fs, ret);
-            //}
+    //        BinaryFormatter bf = new BinaryFormatter();
+    //        using (FileStream fs = File.Create("C:/users/ben/desktop/distribution.dat"))
+    //        {
+    //            bf.Serialize(fs, ret);
+    //        }
 
-            //return;
+    //        return;
 
             //List<int> indices = new List<int>();
             //using (Bitmap bmp = (Bitmap)Image.FromFile("C:/users/ben/desktop/template.png"))
@@ -54,9 +54,9 @@ namespace TomogramImageSimulator
             //File.WriteAllText("C:/users/ben/desktop/mask.py", toWrite);
 
             int counter = 0;
-            MRCFile file = MRCParser.Parse(@"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc");
-            //Parallel.For(0, 40, c =>
-            int c = 0; 
+            MRCFile file = MRCParser.Parse(@"/home/brush/tomography2_fullsirtcliptrim.mrc");
+            Parallel.For(0, 40, c =>
+            // int c = 0; 
             {
                 Random rand = new Random(c);
 
@@ -68,10 +68,10 @@ namespace TomogramImageSimulator
                 }
 
                 Tomogram tom = SamplingVoronoiDiagramBuilder.BuildTomogram(100, 100, 10000,
-                    rand.Next(4, 8), file, rand);
-                SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"c:/users/ben/desktop/shrunken/{c}.bmp");
-                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"c:/users/ben/desktop/shrunken/{c}.dat");
-            }//);
+                    rand.Next(15, 40), file, rand);
+                SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"/home/brush/tom4/{c}.bmp");
+                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"/home/brush/tom4/{c}.dat");
+            });
         }
     }
 }
