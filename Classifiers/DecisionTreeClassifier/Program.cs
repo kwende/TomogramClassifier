@@ -47,7 +47,7 @@ namespace DecisionTreeClassifier
                 OutOfRangeValue = 1000000,
                 SplittingThresholdMax = .2f,
                 SufficientGainLevel = 0,
-                PercentageOfPixelsToUse = .05f,
+                PercentageOfPixelsToUse = .25f,
                 //DistanceThreshold = .1f,
             };
 
@@ -98,12 +98,14 @@ namespace DecisionTreeClassifier
                 {
                     for (int x = 501; x < 601; x++, i++)
                     {
-                        tom.Data[i] = frame.Data[y * 100 + x];
+                        tom.Data[i] = frame.Data[y * frame.Width + x];
                     }
                 }
 
-                float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
+                //LabeledTomogram tom = DataReader.ReadDatFile("C:/users/ben/desktop/0.dat"); 
 
+                float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
+                //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom); 
                 Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
                 bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
 
@@ -127,7 +129,7 @@ namespace DecisionTreeClassifier
 
         static void Main(string[] args)
         {
-            Train();
+            //Train();
             Test();
         }
     }
