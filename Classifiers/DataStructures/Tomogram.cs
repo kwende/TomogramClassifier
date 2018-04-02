@@ -21,6 +21,10 @@ namespace DataStructures
         public int MinimumVesicleRadius { get; set; }
         public int MaximumVesicleRadius { get; set; }
         public float MinimumTomogramValue { get; set; }
+        public int BlurRadius { get; set; }
+        public int FinalWidth { get; set; }
+        public int FinalHeight { get; set; }
+
         [NonSerialized]
         public Random Random; 
     }

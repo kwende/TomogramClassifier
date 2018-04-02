@@ -15,12 +15,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="4.5.0-preview1-25914-04" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ComputerVision\ComputerVision.csproj" />
     <ProjectReference Include="..\DataStructures\DataStructures.csproj" />
+    <ProjectReference Include="..\Drawing\Drawing.csproj" />
     <ProjectReference Include="..\MRCSharpLib\MRCSharpLib.csproj" />
   </ItemGroup>
 

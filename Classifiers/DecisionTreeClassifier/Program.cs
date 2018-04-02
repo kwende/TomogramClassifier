@@ -106,7 +106,7 @@ namespace DecisionTreeClassifier
 
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
                 //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom); 
-                Bitmap bmp = DataManipulator.PaintClassifiedPixelsOnTomogram(tom, labels);
+                Bitmap bmp = Drawing.Tomogram.PaintClassifiedPixelsOnTomogram(tom, labels);
                 bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
 
                 //tom = Morphology.Open(new LabeledTomogram

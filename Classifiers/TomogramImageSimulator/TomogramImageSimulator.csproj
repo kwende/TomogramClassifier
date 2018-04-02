@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataStructures\DataStructures.csproj" />
+    <ProjectReference Include="..\Drawing\Drawing.csproj" />
     <ProjectReference Include="..\Math\Maths.csproj" />
     <ProjectReference Include="..\MRCSharpLib\MRCSharpLib.csproj" />
   </ItemGroup>

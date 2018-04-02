@@ -70,15 +70,18 @@ namespace TomogramImageSimulator
         {
 
             Tomogram ret = new Tomogram();
-            ret.Width = width;
-            ret.Height = height;
+            ret.BlurRadius = 4;
+            ret.Width = width + ret.BlurRadius * 2;
+            ret.Height = height + ret.BlurRadius * 2;
+            ret.FinalWidth = width;
+            ret.FinalHeight = height;
             ret.BackgroundDensity = backgroundDensity;
             ret.VesicleCount = vesicleCount;
             ret.Random = new Random();
-            ret.MinimumVesicleRadius = 10;
-            ret.MaximumVesicleRadius = 20;
-            ret.Data = new float[width * height];
-            ret.DataClasses = new int[width * height];
+            ret.MinimumVesicleRadius = 8;
+            ret.MaximumVesicleRadius = 15;
+            ret.Data = new float[ret.Width * ret.Height];
+            ret.DataClasses = new int[ret.Width * ret.Height];
 
             BuildBackground(ret);
             AddVesicles(ret);
@@ -88,7 +91,7 @@ namespace TomogramImageSimulator
             return ret;
         }
 
-        private static void FinalizeFrame(Tomogram tom, Random rand, MRCFile file, 
+        private static void FinalizeFrame(Tomogram tom, Random rand, MRCFile file,
             string serializedSamplerPath)
         {
 
@@ -100,12 +103,12 @@ namespace TomogramImageSimulator
 
             int[] classes = tom.DataClasses.Where(n => n != -1).Distinct().ToArray();
 
-            Dictionary<int, float> classValues = new Dictionary<int, float>(); 
+            Dictionary<int, float> classValues = new Dictionary<int, float>();
             for (int c = 0; c < classes.Length; c++)
             {
                 MRCFrame frame = file.Frames[145];// rand.Next(0, file.Frames.Count - 1)];
                 float value = frame.Data[rand.Next(0, frame.Data.Length - 1)];
-                classValues.Add(classes[c], value); 
+                classValues.Add(classes[c], value);
             }
 
             for (int y = 0, i = 0; y < tom.Height; y++)
@@ -120,8 +123,6 @@ namespace TomogramImageSimulator
                 }
             }
 
-            GaussianBlur blur = GaussianBlur.BuildBlur(.5f, 2);
-            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
 
             List<float> distribution = null;
             BinaryFormatter bf = new BinaryFormatter();
@@ -137,11 +138,29 @@ namespace TomogramImageSimulator
                     int classNumber = tom.DataClasses[i];
                     if (classNumber == -1)
                     {
-                        tom.Data[i] = distribution[rand.Next(0, distribution.Count - 1)]; 
+                        tom.Data[i] = distribution[rand.Next(0, distribution.Count - 1)];
                     }
                 }
             }
+            //            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
+
+            GaussianBlur blur = GaussianBlur.BuildBlur(.75f, 4);
             tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
+
+            float[] finalData = new float[tom.FinalHeight * tom.FinalWidth];
+            for (int y = 0, dstIndex = 0; y < tom.FinalHeight; y++)
+            {
+                for (int x = 0; x < tom.FinalHeight; x++, dstIndex++)
+                {
+                    int srcIndex = (y + tom.BlurRadius) * tom.Width + (x + tom.BlurRadius);
+                    finalData[dstIndex] = tom.Data[srcIndex];
+                }
+            }
+
+            // hack. clean this up. 
+            tom.Data = finalData;
+            tom.Width = tom.FinalWidth;
+            tom.Height = tom.FinalHeight;
         }
 
         private static void AddVesicles(Tomogram tom)
@@ -197,7 +216,7 @@ namespace TomogramImageSimulator
                             (centerY - y) * (centerY - y) + (centerX - x) * (centerX - x));
 
                         if (distance <= vesicle.Radius
-                            && distance >= vesicle.Radius - tom.Random.Next(2, 5)
+                            && distance >= vesicle.Radius - tom.Random.Next(2, 3)
                             && y >= 0 && x >= 0 &&
                             y < tom.Height && x < tom.Width)
                         {
