@@ -20,7 +20,7 @@ namespace DecisionTreeClassifier
         {
             Console.WriteLine("Loading shit...");
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
-            string[] files = Directory.GetFiles(@"/home/brush/toms", "*.dat").Take(20).ToArray();
+            string[] files = Directory.GetFiles(@"/home/brush/tom4", "*.dat").ToArray();
             int i = 0;
             foreach (string file in files)
             {
@@ -47,7 +47,7 @@ namespace DecisionTreeClassifier
                 OutOfRangeValue = 1000000,
                 SplittingThresholdMax = .2f,
                 SufficientGainLevel = 0,
-                PercentageOfPixelsToUse = .25f,
+                PercentageOfPixelsToUse = 1f,
                 //DistanceThreshold = .1f,
             };
 
@@ -129,7 +129,7 @@ namespace DecisionTreeClassifier
 
         static void Main(string[] args)
         {
-            //Train();
+            Train();
             Test();
         }
     }
