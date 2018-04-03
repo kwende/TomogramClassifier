@@ -17,6 +17,35 @@ namespace Maths
             _kernel = new float[radius * 2 + 1, radius * 2 + 1];
         }
 
+        public float[] SelectivelyBlurData(float[] data, int[] map, int width, int height)
+        {
+            float[] blurred = new float[data.Length];
+
+            for (int y = _radius; y < height - _radius; y++)
+            {
+                for (int x = _radius; x < width - _radius; x++)
+                {
+                    int index = y * width + x; 
+
+                    if(map[index] == 1)
+                    {
+                        float value = 0.0f;
+                        for (int y1 = y - _radius, y2 = 0; y1 < y + _radius; y1++, y2++)
+                        {
+                            for (int x1 = x - _radius, x2 = 0; x1 < x + _radius; x1++, x2++)
+                            {
+                                float scaler = _kernel[x2, y2];
+                                value += data[y1 * width + x1] * scaler;
+                            }
+                        }
+                        blurred[index] = value;
+                    }
+                }
+            }
+
+            return blurred;
+        }
+
         public float[] BlurData(float[] data, int width, int height)
         {
             float[] blurred = new float[data.Length];

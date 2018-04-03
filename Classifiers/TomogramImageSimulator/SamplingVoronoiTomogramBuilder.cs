@@ -70,7 +70,7 @@ namespace TomogramImageSimulator
         {
 
             Tomogram ret = new Tomogram();
-            ret.BlurRadius = 4;
+            ret.BlurRadius = 2;
             ret.Width = width + ret.BlurRadius * 2;
             ret.Height = height + ret.BlurRadius * 2;
             ret.FinalWidth = width;
@@ -131,6 +131,8 @@ namespace TomogramImageSimulator
                 distribution = bf.Deserialize(fin) as List<float>;
             }
 
+            int[] mask = new int[tom.Width * tom.Height];
+
             for (int y = 0, i = 0; y < tom.Height; y++)
             {
                 for (int x = 0; x < tom.Width; x++, i++)
@@ -139,13 +141,18 @@ namespace TomogramImageSimulator
                     if (classNumber == -1)
                     {
                         tom.Data[i] = distribution[rand.Next(0, distribution.Count - 1)];
+                        mask[i] = 0;
+                    }
+                    else
+                    {
+                        mask[i] = 1;
                     }
                 }
             }
             //            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
 
-            GaussianBlur blur = GaussianBlur.BuildBlur(.75f, 4);
-            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
+            GaussianBlur blur = GaussianBlur.BuildBlur(.65f, tom.BlurRadius);
+            tom.Data = blur.SelectivelyBlurData(tom.Data, mask, tom.Width, tom.Height);
 
             float[] finalData = new float[tom.FinalHeight * tom.FinalWidth];
             for (int y = 0, dstIndex = 0; y < tom.FinalHeight; y++)
@@ -216,7 +223,7 @@ namespace TomogramImageSimulator
                             (centerY - y) * (centerY - y) + (centerX - x) * (centerX - x));
 
                         if (distance <= vesicle.Radius
-                            && distance >= vesicle.Radius - tom.Random.Next(2, 3)
+                            && distance >= vesicle.Radius - tom.Random.Next(1, 3)
                             && y >= 0 && x >= 0 &&
                             y < tom.Height && x < tom.Width)
                         {
