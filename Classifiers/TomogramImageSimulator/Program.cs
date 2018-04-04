@@ -73,8 +73,8 @@ namespace TomogramImageSimulator
 
                 Tomogram tom = SamplingVoronoiDiagramBuilder.BuildTomogram(100, 100, 3000,
                     rand.Next(15, 40), file, rand);
-                //SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"/home/brush/tom4/{c}.bmp");
-                //SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"/home/brush/tom4/{c}.dat");
+                SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"/home/brush/tom4/{c}.bmp");
+                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"/home/brush/tom4/{c}.dat");
                 //SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"D:/tomograms/simulated/{c}.bmp");
                 //SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"D:/tomograms/simulated/{c}.dat");
             });
