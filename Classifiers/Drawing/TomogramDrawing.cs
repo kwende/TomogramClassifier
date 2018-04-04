@@ -6,13 +6,34 @@ using System.Linq;
 
 namespace Drawing
 {
-    public class Tomogram
+    public static class TomogramDrawing
     {
+        public static Bitmap Tomogram2Bitmap(Tomogram tom, bool paintNegatives)
+        {
+            Bitmap bmp = new Bitmap(tom.Width, tom.Height);
+            for (int y = 0, i = 0; y < bmp.Height; y++)
+            {
+                for (int x = 0; x < bmp.Width; x++, i++)
+                {
+                    byte value = (byte)((tom.Data[i] +
+                        System.Math.Abs(tom.MinimumTomogramValue)) * tom.MRCScaler);
+                    if (value > 0)
+                    {
+                        bmp.SetPixel(x, y, Color.FromArgb(value, value, value));
+                    }
+                    else if(paintNegatives)
+                    {
+                        bmp.SetPixel(x, y, Color.Red);
+                    }
+                }
+            }
+            return bmp;
+        }
 
         public static Bitmap PaintClassifiedPixelsOnTomogram(LabeledTomogram tom, float[] labels)
         {
             tom.Labels = new float[tom.Width * tom.Height];
-            Bitmap bmp = Tomogram2Bitmap(tom);
+            Bitmap bmp = LabeledTomogram2Bitmap(tom);
 
             //using (Bitmap bmp = Tomogram2Bitmap(tom))
             {
@@ -89,7 +110,7 @@ namespace Drawing
             return bmp;
         }
 
-        public static Bitmap Tomogram2Bitmap(LabeledTomogram tomogram)
+        public static Bitmap LabeledTomogram2Bitmap(LabeledTomogram tomogram)
         {
             float minFloat = tomogram.Data.Min();
             float maxfloat = tomogram.Data.Max();
@@ -114,35 +135,6 @@ namespace Drawing
 
                         bmp.SetPixel(x, y, System.Drawing.Color.FromArgb(b, b, b));
                     }
-                }
-            }
-
-            return bmp;
-        }
-
-        public static Bitmap PaintCentersOnTomogram(Bitmap bmp, Point2D[] centers)
-        {
-            Color[] Colors = new Color[]
-            {
-                Color.Red, Color.Blue, Color.Green, Color.Pink, Color.Orange, Color.Yellow, Color.Purple
-            };
-
-            if (centers.Length > Colors.Length)
-                throw new ArgumentException("Need to add more colors to PaintCentersOnTomogram to handle this many centers.");
-
-            using (Graphics g = Graphics.FromImage(bmp))
-            {
-                int colorIndex = 0;
-                foreach (Point2D center in centers)
-                {
-                    g.DrawRectangle(new Pen(Colors[colorIndex], 2), new Rectangle
-                    {
-                        Height = 3,
-                        Width = 3,
-                        X = (int)center.X - 1,
-                        Y = (int)center.Y - 1
-                    });
-                    colorIndex++;
                 }
             }
 

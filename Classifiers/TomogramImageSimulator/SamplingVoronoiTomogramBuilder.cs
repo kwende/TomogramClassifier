@@ -23,47 +23,6 @@ namespace TomogramImageSimulator
             }
         }
 
-        public static void SaveAsBitmap(Tomogram tomogram, string path)
-        {
-            //Color[] colors = new Color[tomogram.BackgroundDensity];
-
-            //for (int c = 0; c < colors.Length; c++)
-            //{
-            //    byte b = (byte)RandomNormal.Next(tomogram.Random, 85, 15);
-            //    colors[c] = Color.FromArgb(b, b, b);
-            //}
-
-            using (Bitmap bmp = new Bitmap(tomogram.Width, tomogram.Height))
-            {
-                for (int y = 0, i = 0; y < bmp.Height; y++)
-                {
-                    for (int x = 0; x < bmp.Width; x++, i++)
-                    {
-                        byte value = (byte)((tomogram.Data[i] +
-                            System.Math.Abs(tomogram.MinimumTomogramValue)) * tomogram.MRCScaler);
-                        if (value > 0)
-                        {
-                            bmp.SetPixel(x, y, Color.FromArgb(value, value, value));
-                        }
-                    }
-                }
-
-                //for (int y = 0, i = 0; y < bmp.Height; y++)
-                //{
-                //    for (int x = 0; x < bmp.Width; x++, i++)
-                //    {
-                //        int colorIndex = tomogram.Data[i];
-                //        if (colorIndex == 0)
-                //        {
-                //            byte b = (byte)tomogram.Random.Next(50, 60);
-                //            bmp.SetPixel(x, y, Color.FromArgb(b, b, b));
-                //        }
-                //    }
-                //}
-
-                bmp.Save(path);
-            }
-        }
 
         public static Tomogram BuildTomogram(int width, int height,
             int backgroundDensity, int vesicleCount, MRCFile file, Random rand)

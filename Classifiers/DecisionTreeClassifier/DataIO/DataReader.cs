@@ -24,13 +24,13 @@ namespace DecisionTreeClassifier.DataIO
                 l.Height = tom.Height;
                 l.Labels = new float[l.Data.Length];
 
-		int m = 0; 
+                int m = 0;
                 for (int c = 0; c < l.Labels.Length; c++)
                 {
                     if (tom.DataClasses[c] == -1)
                     {
                         l.Labels[c] = 1;
-			m++; 
+                        m++;
                     }
                     else
                     {
@@ -38,7 +38,7 @@ namespace DecisionTreeClassifier.DataIO
                     }
                 }
 
-		Console.WriteLine(m.ToString()); 
+                Console.WriteLine(m.ToString());
 
                 return l;
             }
@@ -55,7 +55,7 @@ namespace DecisionTreeClassifier.DataIO
             ret.Width = frame.Width;
             ret.Height = frame.Height;
 
-            return ret; 
+            return ret;
         }
 
         public static LabeledTomogram ReadTomogramPair(string dataFile, string labelFile, int width, int height)

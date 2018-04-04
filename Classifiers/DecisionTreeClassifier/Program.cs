@@ -106,14 +106,14 @@ namespace DecisionTreeClassifier
 
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
                 //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom); 
-                Bitmap bmp = Drawing.Tomogram.PaintClassifiedPixelsOnTomogram(tom, labels);
+                Bitmap bmp = Drawing.TomogramDrawing.PaintClassifiedPixelsOnTomogram(tom, labels);
                 bmp.Save("/var/www/html/static/labeled_real.png", System.Drawing.Imaging.ImageFormat.Png);
 
                 LabeledTomogram tom2 = DataReader.ReadDatFile("/home/brush/tom4/0.dat");
 
                 labels = DecisionTreeBuilder.Predict(tom2, node, options);
                 //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom); 
-                bmp = Drawing.Tomogram.PaintClassifiedPixelsOnTomogram(tom2, labels);
+                bmp = Drawing.TomogramDrawing.PaintClassifiedPixelsOnTomogram(tom2, labels);
                 bmp.Save("/var/www/html/static/labeled_simulated.png", System.Drawing.Imaging.ImageFormat.Png);
             }
         }

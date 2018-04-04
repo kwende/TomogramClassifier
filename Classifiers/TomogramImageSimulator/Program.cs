@@ -1,4 +1,5 @@
 ﻿using DataStructures;
+using Drawing;
 using MRCSharpLib;
 using System;
 using System.Collections.Generic;
@@ -14,45 +15,6 @@ namespace TomogramImageSimulator
     {
         static void Main(string[] args)
         {
-            //List<float> distribution = AnnotatedTomogramSampler.Sample(
-            //    @"C:\Users\Ben\Desktop\145_painted.png",
-            //    @"C:\Users\Ben\Downloads\tomography2_fullsirtcliptrim.mrc",
-            //    145);
-
-            //return; 
-
-            //        List<float> ret = AnnotatedTomogramSampler.Sample(
-            //@"C:\Users\ben\Desktop\samples\145_painted.png",
-            //@"E:\Downloads\tomography2_fullsirtcliptrim.mrc",
-            //145);
-
-            //        BinaryFormatter bf = new BinaryFormatter();
-            //        using (FileStream fs = File.Create("C:/users/ben/desktop/distribution.dat"))
-            //        {
-            //            bf.Serialize(fs, ret);
-            //        }
-
-            //        return;
-
-            //List<int> indices = new List<int>();
-            //using (Bitmap bmp = (Bitmap)Image.FromFile("C:/users/ben/desktop/template.png"))
-            //{
-            //    for (int y = 0, i = 0; y < bmp.Height; y++)
-            //    {
-            //        for (int x = 0; x < bmp.Width; x++, i++)
-            //        {
-            //            Color c = bmp.GetPixel(x, y);
-            //            if (c.R == 255 && c.G == 255 && c.B == 255)
-            //            {
-            //                indices.Add(i);
-            //            }
-            //        }
-            //    }
-            //}
-
-            //string toWrite = "mask = [" + string.Join(",", indices.ToArray()) + "]";
-            //File.WriteAllText("C:/users/ben/desktop/mask.py", toWrite);
-
             int counter = 0;
             //MRCFile file = MRCParser.Parse(@"D:\tomograms\tomography2_fullsirtcliptrim.mrc");
             MRCFile file = MRCParser.Parse(@"/home/brush/tomography2_fullsirtcliptrim.mrc");
@@ -73,8 +35,11 @@ namespace TomogramImageSimulator
 
                 Tomogram tom = SamplingVoronoiDiagramBuilder.BuildTomogram(100, 100, 3000,
                     rand.Next(15, 40), file, rand);
-                SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"/home/brush/tom4/{c}.bmp");
+                TomogramDrawing.Tomogram2Bitmap(tom, false).Save($"/home/brush/tom4/{c}.bmp");
+                TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"/home/brush/tom4/{c}_labeled.bmp");
                 SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"/home/brush/tom4/{c}.dat");
+
+
                 //SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"D:/tomograms/simulated/{c}.bmp");
                 //SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"D:/tomograms/simulated/{c}.dat");
             });
