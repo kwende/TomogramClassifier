@@ -72,17 +72,18 @@ namespace DecisionTreeClassifier
                 DecisionTreeOptions options = new DecisionTreeOptions
                 {
                     // TODO: Fill in
-                    MaximumNumberOfRecursionLevels = 20,
+                    MaximumNumberOfRecursionLevels = 25,
                     NumberOfFeatures = 250,
                     NumberOfThresholds = 25,
-                    OffsetXMax = 100,
-                    OffsetXMin = -100,
-                    OffsetYMax = 100,
-                    OffsetYMin = -100,
+                    OffsetXMax = 25,
+                    OffsetXMin = -25,
+                    OffsetYMax = 25,
+                    OffsetYMin = -25,
                     OutOfRangeValue = 1000000,
                     SplittingThresholdMax = .2f,
                     SufficientGainLevel = 0,
-                    PercentageOfPixelsToUse = .1f
+                    PercentageOfPixelsToUse = 1f,
+                    //DistanceThreshold = .1f,
                 };
 
                 LabeledTomogram tom = new LabeledTomogram();
@@ -102,28 +103,18 @@ namespace DecisionTreeClassifier
                     }
                 }
 
-                //LabeledTomogram tom = DataReader.ReadDatFile("C:/users/ben/desktop/0.dat"); 
 
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
                 //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom); 
                 Bitmap bmp = Drawing.Tomogram.PaintClassifiedPixelsOnTomogram(tom, labels);
-                bmp.Save("/var/www/html/static/labeled.png", System.Drawing.Imaging.ImageFormat.Png); 
+                bmp.Save("/var/www/html/static/labeled_real.png", System.Drawing.Imaging.ImageFormat.Png);
 
-                //tom = Morphology.Open(new LabeledTomogram
-                //{
-                //    Data = tom.Data,
-                //    Width = tom.Width,
-                //    Height = tom.Height,
-                //    Labels = labels,
-                //}, 1, 1);
+                LabeledTomogram tom2 = DataReader.ReadDatFile("/home/brush/0.dat");
 
-                //Cluster[] clusterCenters = DbScan.Cluster(tom, 2.5f, 5);
-
-                //tom.Labels = null;
-
-                //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom);
-                //bmp = DataManipulator.PaintCentersOnBitmap(bmp, clusterCenters);
-                //bmp.Save("labeled.bmp");
+                labels = DecisionTreeBuilder.Predict(tom2, node, options);
+                //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom); 
+                bmp = Drawing.Tomogram.PaintClassifiedPixelsOnTomogram(tom2, labels);
+                bmp.Save("/var/www/html/static/labeled_simulated.png", System.Drawing.Imaging.ImageFormat.Png);
             }
         }
 
