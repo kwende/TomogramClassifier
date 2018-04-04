@@ -109,7 +109,7 @@ namespace DecisionTreeClassifier
                 Bitmap bmp = Drawing.Tomogram.PaintClassifiedPixelsOnTomogram(tom, labels);
                 bmp.Save("/var/www/html/static/labeled_real.png", System.Drawing.Imaging.ImageFormat.Png);
 
-                LabeledTomogram tom2 = DataReader.ReadDatFile("/home/brush/0.dat");
+                LabeledTomogram tom2 = DataReader.ReadDatFile("/home/brush/tom4/0.dat");
 
                 labels = DecisionTreeBuilder.Predict(tom2, node, options);
                 //Bitmap bmp = DataManipulator.Tomogram2Bitmap(tom); 
