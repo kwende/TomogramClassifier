@@ -22,7 +22,7 @@ namespace TomogramImageSimulator
             //Drawing.Tomogram.MRCFrame2Bitmap(file, 145).Save("C:/users/brush/desktop/sampleframe.bmp"); 
 
             Parallel.For(0, 40, c =>
-            // int c = 0; 
+            //int c = 0; 
             {
                 Random rand = new Random(c);
 
@@ -39,8 +39,8 @@ namespace TomogramImageSimulator
                 TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"/home/brush/tom4/{c}_labeled.bmp");
                 SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"/home/brush/tom4/{c}.dat");
 
-
-                //SamplingVoronoiDiagramBuilder.SaveAsBitmap(tom, $"D:/tomograms/simulated/{c}.bmp");
+                //TomogramDrawing.Tomogram2Bitmap(tom, false).Save($"D:/tomograms/simulated/{c}.bmp");
+                //TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"D:/tomograms/simulated/{c}_labeled.bmp");
                 //SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"D:/tomograms/simulated/{c}.dat");
             });
         }

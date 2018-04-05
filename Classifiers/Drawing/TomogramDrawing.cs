@@ -15,15 +15,18 @@ namespace Drawing
             {
                 for (int x = 0; x < bmp.Width; x++, i++)
                 {
-                    byte value = (byte)((tom.Data[i] +
-                        System.Math.Abs(tom.MinimumTomogramValue)) * tom.MRCScaler);
-                    if (value > 0)
-                    {
-                        bmp.SetPixel(x, y, Color.FromArgb(value, value, value));
-                    }
-                    else if(paintNegatives)
+                    if (paintNegatives && tom.DataClasses[i] < 0)
                     {
                         bmp.SetPixel(x, y, Color.Red);
+                    }
+                    else
+                    {
+                        byte value = (byte)((tom.Data[i] +
+                        System.Math.Abs(tom.MinimumTomogramValue)) * tom.MRCScaler);
+                        if (value > 0)
+                        {
+                            bmp.SetPixel(x, y, Color.FromArgb(value, value, value));
+                        }
                     }
                 }
             }
