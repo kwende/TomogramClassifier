@@ -66,7 +66,11 @@ namespace TomogramImageSimulator
             for (int c = 0; c < classes.Length; c++)
             {
                 MRCFrame frame = file.Frames[145];// rand.Next(0, file.Frames.Count - 1)];
-                float value = frame.Data[rand.Next(0, frame.Data.Length - 1)];
+
+                int randomX = rand.Next(511, 611);
+                int randomY = rand.Next(292, 392);
+                int randomIndex = randomY * frame.Width + randomX; 
+                float value = frame.Data[randomIndex];
                 classValues.Add(classes[c], value);
             }
 
