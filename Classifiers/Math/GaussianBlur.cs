@@ -17,7 +17,7 @@ namespace Maths
             _kernel = new float[radius * 2 + 1, radius * 2 + 1];
         }
 
-        public float[] SelectivelyBlurData(float[] data, int[] map, int width, int height)
+        public float[] SelectivelyBlurData(float[] data, int[] map, int width, int height, float chance, Random rand)
         {
             float[] blurred = new float[data.Length];
 
@@ -25,9 +25,9 @@ namespace Maths
             {
                 for (int x = _radius; x < width - _radius; x++)
                 {
-                    int index = y * width + x; 
+                    int index = y * width + x;
 
-                    if(map[index] == 1)
+                    if (map[index] == 1 || rand.NextDouble() < chance)
                     {
                         float value = 0.0f;
                         for (int y1 = y - _radius, y2 = 0; y1 < y + _radius; y1++, y2++)

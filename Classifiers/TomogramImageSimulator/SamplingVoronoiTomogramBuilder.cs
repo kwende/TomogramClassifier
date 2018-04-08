@@ -115,7 +115,7 @@ namespace TomogramImageSimulator
             //            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
 
             GaussianBlur blur = GaussianBlur.BuildBlur(.65f, tom.BlurRadius);
-            tom.Data = blur.SelectivelyBlurData(tom.Data, mask, tom.Width, tom.Height);
+            tom.Data = blur.SelectivelyBlurData(tom.Data, mask, tom.Width, tom.Height, .25f, rand);
 
             float[] finalData = new float[tom.FinalHeight * tom.FinalWidth];
             int[] finalDataClasses = new int[tom.FinalHeight * tom.FinalWidth]; 
