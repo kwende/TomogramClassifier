@@ -115,7 +115,7 @@ namespace TomogramImageSimulator
             //            tom.Data = blur.BlurData(tom.Data, tom.Width, tom.Height);
 
             GaussianBlur blur = GaussianBlur.BuildBlur(.65f, tom.BlurRadius);
-            tom.Data = blur.SelectivelyBlurData(tom.Data, mask, tom.Width, tom.Height, .25f, rand);
+            tom.Data = blur.SelectivelyBlurData(tom.Data, mask, tom.Width, tom.Height, 1f, rand);
 
             float[] finalData = new float[tom.FinalHeight * tom.FinalWidth];
             int[] finalDataClasses = new int[tom.FinalHeight * tom.FinalWidth]; 
@@ -190,7 +190,7 @@ namespace TomogramImageSimulator
                             (centerY - y) * (centerY - y) + (centerX - x) * (centerX - x));
 
                         if (distance <= vesicle.Radius
-                            && distance >= vesicle.Radius - tom.Random.Next(1, 3)
+                            && distance >= vesicle.Radius - tom.Random.Next(2, 4)
                             && y >= 0 && x >= 0 &&
                             y < tom.Height && x < tom.Width)
                         {
