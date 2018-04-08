@@ -26,9 +26,9 @@ namespace TomogramImageSimulator
             //}
 
             int counter = 0;
-            MRCFile file = MRCParser.Parse(@"c:/users/ben/desktop/tomography2_fullsirtcliptrim.mrc");
+            //MRCFile file = MRCParser.Parse(@"c:/users/ben/desktop/tomography2_fullsirtcliptrim.mrc");
             //MRCFile file = MRCParser.Parse(@"D:\tomograms\tomography2_fullsirtcliptrim.mrc");
-            //MRCFile file = MRCParser.Parse(@"/home/brush/tomography2_fullsirtcliptrim.mrc");
+            MRCFile file = MRCParser.Parse(@"/home/brush/tomography2_fullsirtcliptrim.mrc");
 
             //Drawing.Tomogram.MRCFrame2Bitmap(file, 145).Save("C:/users/brush/desktop/sampleframe.bmp"); 
 
@@ -46,13 +46,13 @@ namespace TomogramImageSimulator
 
                 Tomogram tom = SamplingVoronoiDiagramBuilder.BuildTomogram(100, 100, 3000,
                     rand.Next(15, 40), file, rand);
-                TomogramDrawing.Tomogram2Bitmap(tom, false).Save($"c:/users/ben/desktop/tom4/{c}.bmp");
-                TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"c:/users/ben/desktop/tom4/{c}_labeled.bmp");
-                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"c:/users/ben/desktop/tom4/{c}.dat");
+                //TomogramDrawing.Tomogram2Bitmap(tom, false).Save($"c:/users/ben/desktop/tom4/{c}.bmp");
+                //TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"c:/users/ben/desktop/tom4/{c}_labeled.bmp");
+                //SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"c:/users/ben/desktop/tom4/{c}.dat");
 
-                //TomogramDrawing.Tomogram2Bitmap(tom, false).Save($"/home/brush/tom4/{c}.bmp");
-                //TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"/home/brush/tom4/{c}_labeled.bmp");
-                //SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"/home/brush/tom4/{c}.dat");
+                TomogramDrawing.Tomogram2Bitmap(tom, false).Save($"/home/brush/tom4/{c}.bmp");
+                TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"/home/brush/tom4/{c}_labeled.bmp");
+                SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"/home/brush/tom4/{c}.dat");
 
                 //TomogramDrawing.Tomogram2Bitmap(tom, false).Save($"D:/tomograms/simulated/{c}.bmp");
                 //TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"D:/tomograms/simulated/{c}_labeled.bmp");
