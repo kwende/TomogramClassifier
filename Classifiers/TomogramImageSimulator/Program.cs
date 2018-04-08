@@ -61,6 +61,7 @@ namespace TomogramImageSimulator
                     TomogramDrawing.Tomogram2Bitmap(tom, false).Save($"c:/users/ben/desktop/tom4/{c}.bmp");
                     TomogramDrawing.Tomogram2Bitmap(tom, true).Save($"c:/users/ben/desktop/tom4/{c}_labeled.bmp");
                     SamplingVoronoiDiagramBuilder.SaveAsDatFile(tom, $"c:/users/ben/desktop/tom4/{c}.dat");
+                    DistributionWriter.WriteDistribution(tom, $"C:/users/ben/desktop/tom4/{c}.csv"); 
                 }
                 else if (Directory.Exists("/home/brush/"))
                 {
