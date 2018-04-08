@@ -15,6 +15,16 @@ namespace TomogramImageSimulator
     {
         static void Main(string[] args)
         {
+
+            //List<float> distribution = AnnotatedTomogramSampler.Sample("C:/users/ben/desktop/145_painted.png",
+            //    @"C:\Users\Ben\Desktop\tomography2_fullsirtcliptrim.mrc",
+            //    145);
+            //BinaryFormatter bf = new BinaryFormatter();
+            //using (FileStream fout = File.Create("c:/users/ben/desktop/distribution.dat"))
+            //{
+            //    bf.Serialize(fout, distribution); 
+            //}
+
             int counter = 0;
             //MRCFile file = MRCParser.Parse(@"D:\tomograms\tomography2_fullsirtcliptrim.mrc");
             MRCFile file = MRCParser.Parse(@"/home/brush/tomography2_fullsirtcliptrim.mrc");
