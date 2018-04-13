@@ -21,6 +21,7 @@ namespace DecisionTreeClassifier
             List<LabeledTomogram> ret = new List<LabeledTomogram>();
 
             LabeledTomogram tom = new LabeledTomogram();
+            int positiveLabels = 0; 
             using (Bitmap bmp = (Bitmap)Image.FromFile("145_painted.png"))
             {
                 tom.Width = bmp.Width;
@@ -37,11 +38,14 @@ namespace DecisionTreeClassifier
                         if (c.R != c.G)
                         {
                             tom.Labels[i] = 1;
+                            positiveLabels++; 
                         }
                     }
                 }
             }
-            ret.Add(tom); 
+            ret.Add(tom);
+
+            Console.WriteLine($"Found {positiveLabels} positive pixels."); 
 
             return ret;
         }
@@ -106,39 +110,46 @@ namespace DecisionTreeClassifier
             {
                 DecisionTreeNode node = bf.Deserialize(fs) as DecisionTreeNode;
 
+
                 DecisionTreeOptions options = new DecisionTreeOptions
                 {
                     // TODO: Fill in
                     MaximumNumberOfRecursionLevels = 25,
-                    NumberOfFeatures = 250,
-                    NumberOfThresholds = 25,
-                    OffsetXMax = 25,
-                    OffsetXMin = -25,
-                    OffsetYMax = 25,
-                    OffsetYMin = -25,
+                    NumberOfFeatures = 300,
+                    NumberOfThresholds = 35,
+                    OffsetXMax = 40,
+                    OffsetXMin = -40,
+                    OffsetYMax = 40,
+                    OffsetYMin = -40,
                     OutOfRangeValue = 1000000,
                     SplittingThresholdMax = .2f,
                     SufficientGainLevel = 0,
-                    PercentageOfPixelsToUse = 1f,
+                    PercentageOfPixelsToUse = .9f,
                     //DistanceThreshold = .1f,
                 };
 
-                LabeledTomogram tom = new LabeledTomogram();
-                tom.Width = 100;
-                tom.Height = 100;
-                tom.Data = new float[100 * 100];
 
                 MRCFile file = MRCParser.Parse(Path.Combine("/home/brush/tomography2_fullsirtcliptrim.mrc"));
 
                 MRCFrame frame = file.Frames[145];
 
-                for (int y = 264, i = 0; y < 364; y++)
+                LabeledTomogram tom = new LabeledTomogram();
+                tom.Width = frame.Width;
+                tom.Height = frame.Height;
+                tom.Data = new float[frame.Width * frame.Height];
+
+                for(int i=0;i<frame.Data.Length;i++)
                 {
-                    for (int x = 501; x < 601; x++, i++)
-                    {
-                        tom.Data[i] = frame.Data[y * frame.Width + x];
-                    }
+                    tom.Data[i] = frame.Data[i]; 
                 }
+
+                //for (int y = 264, i = 0; y < 364; y++)
+                //{
+                //    for (int x = 501; x < 601; x++, i++)
+                //    {
+                //        tom.Data[i] = frame.Data[y * frame.Width + x];
+                //    }
+                //}
 
 
                 float[] labels = DecisionTreeBuilder.Predict(tom, node, options);
