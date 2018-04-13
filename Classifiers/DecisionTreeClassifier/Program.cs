@@ -16,7 +16,37 @@ namespace DecisionTreeClassifier
 {
     class Program
     {
-        static void Train()
+        static List<LabeledTomogram> LabeledTomogramsFromPaintedFiles()
+        {
+            List<LabeledTomogram> ret = new List<LabeledTomogram>();
+
+            LabeledTomogram tom = new LabeledTomogram();
+            using (Bitmap bmp = (Bitmap)Image.FromFile("145_painted.png"))
+            {
+                tom.Width = bmp.Width;
+                tom.Height = bmp.Height;
+                tom.Data = new float[tom.Width * tom.Height];
+                tom.Labels = new float[tom.Width * tom.Height];
+
+                for (int y = 0, i = 0; y < bmp.Height; y++)
+                {
+                    for (int x = 0; x < bmp.Width; x++, i++)
+                    {
+                        Color c = bmp.GetPixel(x, y);
+
+                        if (c.R != c.G)
+                        {
+                            tom.Labels[i] = 1;
+                        }
+                    }
+                }
+            }
+            ret.Add(tom); 
+
+            return ret;
+        }
+
+        static List<LabeledTomogram> TomogramsFromGeneratedFiles()
         {
             Console.WriteLine("Loading shit...");
             List<LabeledTomogram> tomograms = new List<LabeledTomogram>();
@@ -34,20 +64,27 @@ namespace DecisionTreeClassifier
             }
             Console.WriteLine("...shit loaded.");
 
+            return tomograms;
+        }
+
+        static void Train()
+        {
+            List<LabeledTomogram> tomograms = LabeledTomogramsFromPaintedFiles();
+
             DecisionTreeOptions options = new DecisionTreeOptions
             {
                 // TODO: Fill in
                 MaximumNumberOfRecursionLevels = 25,
-                NumberOfFeatures = 250,
-                NumberOfThresholds = 25,
-                OffsetXMax = 25,
-                OffsetXMin = -25,
-                OffsetYMax = 25,
-                OffsetYMin = -25,
+                NumberOfFeatures = 300,
+                NumberOfThresholds = 35,
+                OffsetXMax = 40,
+                OffsetXMin = -40,
+                OffsetYMax = 40,
+                OffsetYMin = -40,
                 OutOfRangeValue = 1000000,
                 SplittingThresholdMax = .2f,
                 SufficientGainLevel = 0,
-                PercentageOfPixelsToUse = 1f,
+                PercentageOfPixelsToUse = .9f,
                 //DistanceThreshold = .1f,
             };
 

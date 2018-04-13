@@ -43,7 +43,7 @@ namespace Tester
             const string TomogramDirectory = @"c:/users/ben/downloads/";
 
             Console.WriteLine("Loading main file..");
-            MRCFile file = MRCParser.Parse(@"E:\Downloads\tomography2_fullsirtcliptrim.mrc");
+            MRCFile file = MRCParser.Parse(@"D:\tomograms\tomography2_fullsirtcliptrim.mrc");
 
             //MRCFrame frame = file.Frames[145];
 
@@ -130,7 +130,7 @@ namespace Tester
                             }
                         }
                     }
-                    bmp.Save(Path.Combine("C:/users/ben/desktop/samples/", $"{z}.png"), ImageFormat.Png);
+                    bmp.Save(Path.Combine("C:/users/brush/desktop/samples/", $"{z}.png"), ImageFormat.Png);
                 }
             }
             //}

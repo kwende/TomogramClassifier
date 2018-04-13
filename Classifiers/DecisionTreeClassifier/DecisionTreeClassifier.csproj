@@ -21,4 +21,10 @@
     <ProjectReference Include="..\MRCSharpLib\MRCSharpLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="145_painted.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
