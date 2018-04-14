@@ -20,15 +20,12 @@ namespace DecisionTreeClassifier
         {
             List<LabeledTomogram> ret = new List<LabeledTomogram>();
 
-            LabeledTomogram tom = new LabeledTomogram();
+            LabeledTomogram tom = DataReader.ReadMRCFile("/home/brush/tomography2_fullsirtcliptrim.mrc", 145);
+            tom.Labels = new float[tom.Width * tom.Height]; 
+
             int positiveLabels = 0; 
             using (Bitmap bmp = (Bitmap)Image.FromFile("145_painted.png"))
             {
-                tom.Width = bmp.Width;
-                tom.Height = bmp.Height;
-                tom.Data = new float[tom.Width * tom.Height];
-                tom.Labels = new float[tom.Width * tom.Height];
-
                 for (int y = 0, i = 0; y < bmp.Height; y++)
                 {
                     for (int x = 0; x < bmp.Width; x++, i++)
